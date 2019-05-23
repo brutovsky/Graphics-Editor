@@ -25,6 +25,7 @@ public class CanvasPanel extends JPanel {
     private int x;
     private int y;
     private boolean isMouseClicked;
+    private Tool tool;
 
     private ArrayList<Shape> shapes = new ArrayList<>();
 
