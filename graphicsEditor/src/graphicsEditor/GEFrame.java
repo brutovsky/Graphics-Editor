@@ -6,7 +6,11 @@
 package graphicsEditor;
 
 import java.awt.BorderLayout;
+import java.awt.Button;
 import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Label;
+import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -28,7 +32,13 @@ public class GEFrame extends javax.swing.JFrame {
         canvas = new CanvasPanel();
         toolbar = new ToolbarPanel();
         scrollside = new ScrollSidePanel();
-        add(canvas,BorderLayout.CENTER);
+        JScrollPane scrollCanvas = new JScrollPane(canvas);
+        /*for(int i =0;i< 100;i++){
+            Label label = new Label("        ");
+            canvas.add(label);
+        }*/ //TEST
+        
+        add(scrollCanvas,BorderLayout.CENTER);
         add(toolbar,BorderLayout.PAGE_START);
         add(scrollside,BorderLayout.EAST);
     }

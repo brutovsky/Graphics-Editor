@@ -9,8 +9,11 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.util.ArrayList;
 import javax.swing.JPanel;
 
 /**
@@ -19,8 +22,12 @@ import javax.swing.JPanel;
  */
 public class CanvasPanel extends JPanel {
 
-    int x;
-    int y;
+    private int x;
+    private int y;
+    private boolean isMouseClicked;
+
+    private ArrayList<Shape> shapes = new ArrayList<>();
+
     /**
      * Creates new form CanvasPanel
      */
@@ -43,6 +50,14 @@ public class CanvasPanel extends JPanel {
                 formMouseDragged(evt);
             }
         });
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                formMousePressed(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                formMouseReleased(evt);
+            }
+        });
     }// </editor-fold>//GEN-END:initComponents
 
     private void formMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseDragged
@@ -51,13 +66,58 @@ public class CanvasPanel extends JPanel {
         repaint(x, y, 10, 10);
     }//GEN-LAST:event_formMouseDragged
 
+    private void formMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMousePressed
+        isMouseClicked = true;
+        x = evt.getX();
+        y = evt.getY();
+        repaint(x, y, 10, 10);
+    }//GEN-LAST:event_formMousePressed
+
+    private void formMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseReleased
+        isMouseClicked = false;
+    }//GEN-LAST:event_formMouseReleased
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);//To change body of generated methods, choose Tools | Templates.
-        Graphics2D g2d = (Graphics2D)g;
-        g2d.fill(new Rectangle(x,y,10,10));
+        Graphics2D g2d = (Graphics2D) g;
+        if (isMouseClicked) {
+            Rectangle rect = new Rectangle(x, y, 10, 10);
+            shapes.add(rect);
+            g2d.fill(rect);
+        }
+        //g2d.drawRect(0, 100, 1000, 100);
+        selectPolygon(g2d);
     }
 
+    private Polygon selectPolygon(Graphics2D g) {
+        ArrayList<Point> points = new ArrayList<>();
+        boolean isEdge = false;
+        int px = x;
+        int py = y;
+        
+        do {
+            Point point = new Point(px,py);
+            for (Shape sh : shapes) {
+                if (sh.contains(point)) {
+                    isEdge = true;
+                    break;
+                }
+            }
+            px++;
+            if (px == this.getWidth()) {
+                return null;
+            }
+        } while (!isEdge);
+        
+        points.add(new Point(px, py));
+        g.drawRect(px, py, 100, 100);
+        /*while (true) {
+
+        }*/
+        return null;
+
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
