@@ -5,15 +5,33 @@
  */
 package graphicsEditor;
 
+import java.awt.AWTException;
+import java.awt.AlphaComposite;
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Composite;
+import java.awt.CompositeContext;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.awt.Robot;
 import java.awt.Shape;
+import java.awt.Stroke;
+import java.awt.geom.Area;
+import java.awt.geom.Line2D;
+import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.ImageObserver;
 import java.util.ArrayList;
+import java.util.Stack;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.scene.shape.Line;
 import javax.swing.JPanel;
 
 /**
@@ -22,12 +40,16 @@ import javax.swing.JPanel;
  */
 public class CanvasPanel extends JPanel {
 
-    private int x;
-    private int y;
+    private int x1;
+    private int y1;
+    private int x2;
+    private int y2;
     private boolean isMouseClicked;
     private Tool tool;
 
-    private ArrayList<Shape> shapes = new ArrayList<>();
+    private Stack<Shape> shapes = new Stack();
+
+    private Area area = new Area();
 
     /**
      * Creates new form CanvasPanel
@@ -62,16 +84,21 @@ public class CanvasPanel extends JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void formMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseDragged
-        x = evt.getX();
-        y = evt.getY();
-        repaint(x, y, 10, 10);
+        x2 = evt.getX();
+        y2 = evt.getY();
+        Line2D.Float line = new Line2D.Float(x1, y1, x2, y2);
+        shapes.add(line);
+        repaint();
+        x1 = x2;
+        y1 = y2;
     }//GEN-LAST:event_formMouseDragged
 
     private void formMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMousePressed
         isMouseClicked = true;
-        x = evt.getX();
-        y = evt.getY();
-        repaint(x, y, 10, 10);
+        x1 = evt.getX();
+        y1 = evt.getY();
+        area = new Area();
+        repaint(x1, y1, 5, 5);
     }//GEN-LAST:event_formMousePressed
 
     private void formMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseReleased
@@ -82,25 +109,51 @@ public class CanvasPanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);//To change body of generated methods, choose Tools | Templates.
         Graphics2D g2d = (Graphics2D) g;
-        if (isMouseClicked) {
+        //g2d.setColor(Color.red);
+        /* if (isMouseClicked) {
             Rectangle rect = new Rectangle(x, y, 10, 10);
             shapes.add(rect);
             g2d.fill(rect);
+        }*/
+ 
+        Stroke stroke =new BasicStroke(5,
+                BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+            g2d.drawLine(x1, y1, x2, y2);
+            g2d.setStroke(stroke);
+         
+        for (Shape s : shapes) {
+            g2d.draw(s);
         }
+
         //g2d.drawRect(0, 100, 1000, 100);
-        selectPolygon(g2d);
+        /*if (isMouseClicked) {
+            selectPolygon(g2d);
+        }*/
     }
 
     private Polygon selectPolygon(Graphics2D g) {
+        /*isMouseClicked = false;
+        //Color color = this.getComponentAt(x, y)
+        System.out.println(new Color(getScreenComponent(this).getRGB(x, y)).toString());
         ArrayList<Point> points = new ArrayList<>();
+        if (shapes.empty()) {
+            return null;
+        }
         boolean isEdge = false;
         int px = x;
         int py = y;
-        
+        for (Shape sh : shapes) {
+            if (sh.contains(new Point(x, y))) {
+                System.out.println(x + " , " + y);
+                break;
+            }
+        }
+
         do {
-            Point point = new Point(px,py);
+            Point point = new Point(px, py);
             for (Shape sh : shapes) {
                 if (sh.contains(point)) {
+
                     isEdge = true;
                     break;
                 }
@@ -110,7 +163,7 @@ public class CanvasPanel extends JPanel {
                 return null;
             }
         } while (!isEdge);
-        
+
         points.add(new Point(px, py));
         g.drawRect(px, py, 100, 100);
         /*while (true) {
@@ -118,6 +171,16 @@ public class CanvasPanel extends JPanel {
         }*/
         return null;
 
+    }
+
+    public static BufferedImage getScreenComponent(Component component) {
+        BufferedImage image = new BufferedImage(
+                component.getWidth(),
+                component.getHeight(),
+                BufferedImage.TYPE_INT_RGB
+        );
+        component.paint(image.getGraphics());
+        return image;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
