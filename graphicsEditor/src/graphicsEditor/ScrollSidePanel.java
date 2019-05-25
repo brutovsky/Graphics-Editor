@@ -18,7 +18,7 @@ public class ScrollSidePanel extends javax.swing.JPanel {
      */
     public ScrollSidePanel() {
         initComponents();
-        setBackground(Color.yellow);
+        setBackground(new Color(150, 200, 225));
     }
     /**
      * This method is called from within the constructor to initialize the form.

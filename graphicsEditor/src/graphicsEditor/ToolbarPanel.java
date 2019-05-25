@@ -5,7 +5,7 @@
  */
 package graphicsEditor;
 
-import java.awt.Color;
+import java.awt.*;
 
 /**
  *
@@ -18,7 +18,7 @@ public class ToolbarPanel extends javax.swing.JPanel {
      */
     public ToolbarPanel() {
         initComponents();
-        setBackground(Color.blue);
+        setBackground(new Color(150, 200, 225));
     }
 
     /**
@@ -30,21 +30,90 @@ public class ToolbarPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        setPreferredSize(new java.awt.Dimension(1200, 100));
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
+        shapesPanel = new javax.swing.JPanel();
+        jButton5 = new javax.swing.JButton();
+        jButton6 = new javax.swing.JButton();
+        jButton7 = new javax.swing.JButton();
+        jButton8 = new javax.swing.JButton();
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1200, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
-        );
+        setForeground(new java.awt.Color(0, 150, 200));
+        setMaximumSize(new java.awt.Dimension(1200, 100));
+        setMinimumSize(new java.awt.Dimension(1200, 100));
+        setPreferredSize(new java.awt.Dimension(1200, 100));
+        setLayout(new java.awt.GridBagLayout());
+
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/brush.png"))); // NOI18N
+        jButton1.setText("Brush");
+        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton1.setPreferredSize(new java.awt.Dimension(70, 70));
+        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        add(jButton1, new java.awt.GridBagConstraints());
+
+        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/insertPicture.png"))); // NOI18N
+        jButton2.setText("Insert pic.");
+        jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton2.setPreferredSize(new java.awt.Dimension(100, 90));
+        jButton2.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        add(jButton2, new java.awt.GridBagConstraints());
+
+        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/chooseColor.png"))); // NOI18N
+        jButton3.setText("Choose color");
+        jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        add(jButton3, new java.awt.GridBagConstraints());
+
+        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/insertText.png"))); // NOI18N
+        jButton4.setText("Insert text");
+        jButton4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        add(jButton4, new java.awt.GridBagConstraints());
+
+        shapesPanel.setForeground(Color.yellow);
+        shapesPanel.setMinimumSize(new java.awt.Dimension(100, 100));
+        shapesPanel.setPreferredSize(new java.awt.Dimension(90, 90));
+
+        jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/rectangle.png"))); // NOI18N
+        jButton5.setMaximumSize(new java.awt.Dimension(40, 40));
+        jButton5.setMinimumSize(new java.awt.Dimension(40, 40));
+        jButton5.setPreferredSize(new java.awt.Dimension(40, 40));
+        shapesPanel.add(jButton5);
+
+        jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/circle.png"))); // NOI18N
+        jButton6.setMaximumSize(new java.awt.Dimension(40, 40));
+        jButton6.setMinimumSize(new java.awt.Dimension(40, 40));
+        jButton6.setPreferredSize(new java.awt.Dimension(40, 40));
+        shapesPanel.add(jButton6);
+
+        jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/line.png"))); // NOI18N
+        jButton7.setMaximumSize(new java.awt.Dimension(40, 40));
+        jButton7.setMinimumSize(new java.awt.Dimension(40, 40));
+        jButton7.setPreferredSize(new java.awt.Dimension(40, 40));
+        shapesPanel.add(jButton7);
+
+        jButton8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/triangle.png"))); // NOI18N
+        jButton8.setMaximumSize(new java.awt.Dimension(40, 40));
+        jButton8.setMinimumSize(new java.awt.Dimension(40, 40));
+        jButton8.setPreferredSize(new java.awt.Dimension(40, 40));
+        shapesPanel.add(jButton8);
+
+        add(shapesPanel, new java.awt.GridBagConstraints());
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
+    private javax.swing.JButton jButton7;
+    private javax.swing.JButton jButton8;
+    private javax.swing.JPanel shapesPanel;
     // End of variables declaration//GEN-END:variables
 }

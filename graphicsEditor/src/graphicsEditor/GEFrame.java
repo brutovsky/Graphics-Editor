@@ -33,11 +33,8 @@ public class GEFrame extends javax.swing.JFrame {
         toolbar = new ToolbarPanel();
         scrollside = new ScrollSidePanel();
         JScrollPane scrollCanvas = new JScrollPane(canvas);
-        /*for(int i =0;i< 100;i++){
-            Label label = new Label("        ");
-            canvas.add(label);
-        }*/ //TEST
-        
+        scrollCanvas.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollCanvas.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         add(scrollCanvas,BorderLayout.CENTER);
         add(toolbar,BorderLayout.PAGE_START);
         add(scrollside,BorderLayout.EAST);
@@ -54,18 +51,16 @@ public class GEFrame extends javax.swing.JFrame {
 
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
-        jMenu2 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Graphics Editor");
         setBackground(new java.awt.Color(204, 243, 166));
+        setMaximumSize(new java.awt.Dimension(1200, 700));
+        setMinimumSize(new java.awt.Dimension(1200, 700));
         setPreferredSize(new java.awt.Dimension(1200, 700));
 
         jMenu1.setText("File");
         jMenuBar1.add(jMenu1);
-
-        jMenu2.setText("Edit");
-        jMenuBar1.add(jMenu2);
 
         setJMenuBar(jMenuBar1);
 
@@ -94,7 +89,6 @@ public class GEFrame extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     // End of variables declaration//GEN-END:variables
 }

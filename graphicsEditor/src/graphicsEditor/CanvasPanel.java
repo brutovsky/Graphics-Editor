@@ -5,6 +5,7 @@
  */
 package graphicsEditor;
 
+import com.sun.webkit.ColorChooser;
 import java.awt.AWTException;
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
@@ -32,7 +33,9 @@ import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.shape.Line;
+import javax.swing.JColorChooser;
 import javax.swing.JPanel;
+import javax.swing.colorchooser.ColorChooserComponentFactory;
 
 /**
  *
@@ -51,12 +54,17 @@ public class CanvasPanel extends JPanel {
 
     private Area area = new Area();
 
+    Shape s;
+
+    Color newColor;
+
     /**
      * Creates new form CanvasPanel
      */
     public CanvasPanel() {
         initComponents();
         setBackground(Color.white);
+        newColor = JColorChooser.showDialog(this, "HELLO", Color.yellow);
     }
 
     /**
@@ -68,6 +76,10 @@ public class CanvasPanel extends JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        setMaximumSize(new java.awt.Dimension(1800, 850));
+        setMinimumSize(new java.awt.Dimension(1800, 850));
+        setOpaque(false);
+        setPreferredSize(new java.awt.Dimension(1800, 850));
         addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseDragged(java.awt.event.MouseEvent evt) {
                 formMouseDragged(evt);
@@ -86,18 +98,20 @@ public class CanvasPanel extends JPanel {
     private void formMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseDragged
         x2 = evt.getX();
         y2 = evt.getY();
+
+        s = new Rectangle(x1, y1, x2 - x1, y2 - y1);
+        repaint();
+        /*
         Line2D.Float line = new Line2D.Float(x1, y1, x2, y2);
         shapes.add(line);
-        repaint();
-        x1 = x2;
-        y1 = y2;
+        repaint();*/
     }//GEN-LAST:event_formMouseDragged
 
     private void formMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMousePressed
         isMouseClicked = true;
         x1 = evt.getX();
         y1 = evt.getY();
-        area = new Area();
+        s = new Rectangle(x1, y1, 5, 5);
         repaint(x1, y1, 5, 5);
     }//GEN-LAST:event_formMousePressed
 
@@ -108,14 +122,15 @@ public class CanvasPanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);//To change body of generated methods, choose Tools | Templates.
+
         Graphics2D g2d = (Graphics2D) g;
-        //g2d.setColor(Color.red);
-        /* if (isMouseClicked) {
-            Rectangle rect = new Rectangle(x, y, 10, 10);
-            shapes.add(rect);
-            g2d.fill(rect);
-        }*/
- 
+        g2d.setColor(newColor);
+        g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        if (s != null) {
+            g2d.fill(s);
+        }
+
+        /*
         Stroke stroke =new BasicStroke(5,
                 BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
             g2d.drawLine(x1, y1, x2, y2);
@@ -124,14 +139,11 @@ public class CanvasPanel extends JPanel {
         for (Shape s : shapes) {
             g2d.draw(s);
         }
-
-        //g2d.drawRect(0, 100, 1000, 100);
-        /*if (isMouseClicked) {
-            selectPolygon(g2d);
-        }*/
+         */
     }
 
     private Polygon selectPolygon(Graphics2D g) {
+
         /*isMouseClicked = false;
         //Color color = this.getComponentAt(x, y)
         System.out.println(new Color(getScreenComponent(this).getRGB(x, y)).toString());
