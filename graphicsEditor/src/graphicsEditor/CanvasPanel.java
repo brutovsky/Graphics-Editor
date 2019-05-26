@@ -5,7 +5,14 @@
  */
 package graphicsEditor;
 
+import graphicsEditor.instruments.Strokes;
+import graphicsEditor.instruments.Tool;
+import graphicsEditor.drawnShapes.DrawnRectangle;
+import graphicsEditor.drawnShapes.DrawnTriangle;
 import com.sun.webkit.ColorChooser;
+import graphicsEditor.drawnShapes.Drawable;
+import graphicsEditor.drawnShapes.DrawnCircle;
+import graphicsEditor.drawnShapes.DrawnLine;
 import java.awt.AWTException;
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
@@ -34,6 +41,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.shape.Line;
 import javax.swing.JColorChooser;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.colorchooser.ColorChooserComponentFactory;
 
@@ -43,28 +51,71 @@ import javax.swing.colorchooser.ColorChooserComponentFactory;
  */
 public class CanvasPanel extends JPanel {
 
+    //GEFrame
+    GEFrame frame;
+
+    //Constants
+    public static final int WIDTH = 1850;
+    public static final int HEIGHT = 875;
+    //Color aim for PIPETTE
+    public static final int BRUSH_COLOR = 1;
+    public static final int FILL_COLOR = 2;
+    public static final int BACKGROUND_COLOR = 3;
+
+    //PIPETTE choice
+    private int pipetteChoice;
+
+    //Booleans
+    private boolean isMouseClicked;
+
+    //The list of all shapes to be drawn
+    private ArrayList<Drawable> shapes;
+
+    //Coordinates
     private int x1;
     private int y1;
     private int x2;
     private int y2;
-    private boolean isMouseClicked;
+
+    //Drawn shape
+    private Drawable s;
+
+    //Background rectangle
+    private DrawnRectangle background;
+
+    //Colors
+    private Color brushColor;
+    private Color backgroundColor;
+    private Color fillColor;
+
+    //Stroke
+    private Stroke stroke;
+
+    //Tool
     private Tool tool;
 
-    private Stack<Shape> shapes = new Stack();
+    //Scale
+    private float scale;
 
-    private Area area = new Area();
-
-    Shape s;
-
-    Color newColor;
+    //Varibles nitialization
+    {
+        tool = Tool.BRUSH;
+        stroke = Strokes.STROKE_1.getStroke();
+        scale = 1f;
+        brushColor = Color.BLACK;
+        backgroundColor = Color.WHITE;
+        fillColor = null;
+        background = new DrawnRectangle(stroke, backgroundColor, backgroundColor, 0, 0, WIDTH, HEIGHT);
+        shapes = new ArrayList();
+        shapes.add(background);
+    }
 
     /**
      * Creates new form CanvasPanel
      */
-    public CanvasPanel() {
+    public CanvasPanel(GEFrame frame) {
         initComponents();
-        setBackground(Color.white);
-        newColor = JColorChooser.showDialog(this, "HELLO", Color.yellow);
+        this.frame = frame;
     }
 
     /**
@@ -99,48 +150,147 @@ public class CanvasPanel extends JPanel {
     private void formMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseDragged
         x2 = evt.getX();
         y2 = evt.getY();
+        switch (tool) {
+            case INSERT_PICTURE: {
 
-        s = new Rectangle(x1, y1, x2 - x1, y2 - y1);
+                break;
+            }
+            case INSERT_TEXT: {
+
+                break;
+            }
+            case BRUSH: {
+                shapes.add(new DrawnLine(stroke, brushColor, x1, y1, x2, y2));
+                break;
+            }
+            case ERASER: {
+                shapes.add(new DrawnLine(stroke, backgroundColor, x1, y1, x2, y2));
+                break;
+            }
+            case PIPETTE: {
+                break;
+            }
+            case SHAPE_RECTANGLE: {
+                s = new DrawnRectangle(stroke, brushColor, fillColor, x1, y1, x2 - x1, y2 - y1);
+                repaint();
+                return;
+            }
+            case SHAPE_CIRCLE: {
+
+                break;
+            }
+            case SHAPE_TRIANGLE: {
+
+                break;
+            }
+            case SHAPE_LINE: {
+
+                break;
+            }
+        }
         repaint();
-        /*
-        Line2D.Float line = new Line2D.Float(x1, y1, x2, y2);
-        shapes.add(line);
-        repaint();*/
+        x1 = x2;
+        y1 = y2;
     }//GEN-LAST:event_formMouseDragged
 
     private void formMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMousePressed
         isMouseClicked = true;
         x1 = evt.getX();
         y1 = evt.getY();
-        s = new Rectangle(x1, y1, 5, 5);
-        repaint(x1, y1, 5, 5);
+        switch (tool) {
+            case INSERT_PICTURE: {
+
+                break;
+            }
+            case INSERT_TEXT: {
+
+                break;
+            }
+            case BRUSH: {
+                shapes.add(new DrawnLine(stroke, brushColor, x1, y1, x1, y1));
+                break;
+            }
+            case ERASER: {
+                shapes.add(new DrawnLine(stroke, backgroundColor, x1, y1, x1, y1));
+                break;
+            }
+            case PIPETTE: {
+                if (getTool() == Tool.PIPETTE) {
+                    Color color = new Color(getScreenComponent(this).getRGB(evt.getX(), evt.getY()));
+                    switch (getPipetteChoice()) {
+                        case CanvasPanel.BRUSH_COLOR: {
+                            setBrushColor(color);
+                            break;
+                        }
+                        case CanvasPanel.FILL_COLOR: {
+                            setFillColor(color);
+                            break;
+                        }
+                        case CanvasPanel.BACKGROUND_COLOR: {
+                            DrawnRectangle background = new DrawnRectangle(frame.getCanvas().getStroke(), color, color, 0, 0, CanvasPanel.WIDTH, CanvasPanel.HEIGHT);
+                            setBackgroundRectangle(background);
+                            break;
+                        }
+                    }
+                }
+                break;
+            }
+            case SHAPE_RECTANGLE: {
+                s = new DrawnRectangle(stroke, brushColor, fillColor, x1, y1, 5, 5);
+                break;
+            }
+            case SHAPE_CIRCLE: {
+
+                break;
+            }
+            case SHAPE_TRIANGLE: {
+
+                break;
+            }
+            case SHAPE_LINE: {
+
+                break;
+            }
+        }
+        repaint();
     }//GEN-LAST:event_formMousePressed
 
     private void formMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseReleased
         isMouseClicked = false;
+        if (s != null) {
+            shapes.add(s);
+        }
     }//GEN-LAST:event_formMouseReleased
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);//To change body of generated methods, choose Tools | Templates.
-
         Graphics2D g2d = (Graphics2D) g;
-        g2d.setColor(newColor);
+        g2d.scale(scale, scale);
+        g2d.setColor(brushColor);
         g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        //DRAWING
+        for (Drawable s : shapes) {
+            if (s.getFillColor() != null) {
+                g2d.setColor(s.getFillColor());
+                g2d.fill((Shape) s);
+            }
+            g2d.setStroke(s.getStroke());
+            g2d.setColor(s.getColor());
+            g2d.draw((Shape) s);
+
+        }
+        //Draw Shape s
         if (s != null) {
-            g2d.fill(s);
+            if (s.getFillColor() != null) {
+                g2d.setColor(s.getFillColor());
+                g2d.fill((Shape) s);
+            }
+            g2d.setStroke(s.getStroke());
+            g2d.setColor(s.getColor());
+            g2d.draw((Shape) s);  
         }
 
-        /*
-        Stroke stroke =new BasicStroke(5,
-                BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
-            g2d.drawLine(x1, y1, x2, y2);
-            g2d.setStroke(stroke);
-         
-        for (Shape s : shapes) {
-            g2d.draw(s);
-        }
-         */
     }
 
     private Polygon selectPolygon(Graphics2D g) {
@@ -194,6 +344,129 @@ public class CanvasPanel extends JPanel {
         );
         component.paint(image.getGraphics());
         return image;
+    }
+
+    public boolean isIsMouseClicked() {
+        return isMouseClicked;
+    }
+
+    public ArrayList<Drawable> getShapes() {
+        return shapes;
+    }
+
+    public int getX1() {
+        return x1;
+    }
+
+    public int getY1() {
+        return y1;
+    }
+
+    public int getX2() {
+        return x2;
+    }
+
+    public int getY2() {
+        return y2;
+    }
+
+    public Drawable getS() {
+        return s;
+    }
+
+    public DrawnRectangle getBackgroundRectangle() {
+        return background;
+    }
+
+    public Color getBrushColor() {
+        return brushColor;
+    }
+
+    public Color getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    public Color getFillColor() {
+        return fillColor;
+    }
+
+    public Stroke getStroke() {
+        return stroke;
+    }
+
+    public Tool getTool() {
+        return tool;
+    }
+
+    public float getScale() {
+        return scale;
+    }
+
+    public int getPipetteChoice() {
+        return pipetteChoice;
+    }
+
+    public void setIsMouseClicked(boolean isMouseClicked) {
+        this.isMouseClicked = isMouseClicked;
+    }
+
+    public void setShapes(ArrayList<Drawable> shapes) {
+        this.shapes = shapes;
+    }
+
+    public void setX1(int x1) {
+        this.x1 = x1;
+    }
+
+    public void setY1(int y1) {
+        this.y1 = y1;
+    }
+
+    public void setX2(int x2) {
+        this.x2 = x2;
+    }
+
+    public void setY2(int y2) {
+        this.y2 = y2;
+    }
+
+    public void setS(Drawable s) {
+        this.s = s;
+    }
+
+    public void setBackgroundRectangle(DrawnRectangle background) {
+        setBackgroundColor(background.getColor());
+        getShapes().set(0, background);
+        this.background = background;
+        repaint();
+    }
+
+    public void setBrushColor(Color brushColor) {
+        this.brushColor = brushColor;
+    }
+
+    public void setBackgroundColor(Color backgroundColor) {
+        this.backgroundColor = backgroundColor;
+    }
+
+    public void setFillColor(Color fillColor) {
+        this.fillColor = fillColor;
+    }
+
+    public void setStroke(Stroke stroke) {
+        this.stroke = stroke;
+    }
+
+    public void setTool(Tool tool) {
+        this.tool = tool;
+    }
+
+    public void setScale(float scale) {
+        this.scale = scale;
+    }
+
+    public void setPipetteChoice(int pipetteChoice) {
+        this.pipetteChoice = pipetteChoice;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

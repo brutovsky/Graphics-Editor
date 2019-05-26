@@ -5,11 +5,20 @@
  */
 package graphicsEditor;
 
+import static graphicsEditor.CanvasPanel.getScreenComponent;
+import graphicsEditor.drawnShapes.DrawnRectangle;
+import graphicsEditor.instruments.Tool;
+import java.awt.AWTEvent;
 import java.awt.BorderLayout;
 import java.awt.Button;
 import java.awt.Color;
+import java.awt.Event;
 import java.awt.Graphics;
 import java.awt.Label;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -19,9 +28,13 @@ import javax.swing.UnsupportedLookAndFeelException;
  * @author VADIM
  */
 public class GEFrame extends javax.swing.JFrame {
+
     CanvasPanel canvas;
     ToolbarPanel toolbar;
     ScrollSidePanel scrollside;
+
+    private int current_x_coordinate;
+    private int current_y_coordinate;
 
     /**
      * Creates new form GEFrame
@@ -29,15 +42,17 @@ public class GEFrame extends javax.swing.JFrame {
     public GEFrame() {
         initComponents();
         getContentPane().setBackground(Color.getHSBColor(204, 243, 166));
-        canvas = new CanvasPanel();
-        toolbar = new ToolbarPanel();
-        scrollside = new ScrollSidePanel();
+        canvas = new CanvasPanel(this);
+        toolbar = new ToolbarPanel(this);
+        scrollside = new ScrollSidePanel(this);
         JScrollPane scrollCanvas = new JScrollPane(canvas);
         scrollCanvas.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollCanvas.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        add(scrollCanvas,BorderLayout.CENTER);
-        add(toolbar,BorderLayout.PAGE_START);
-        add(scrollside,BorderLayout.EAST);
+        scrollCanvas.setBackground(Color.white);
+        canvas.setBackground(Color.red);
+        add(scrollCanvas, BorderLayout.CENTER);
+        add(toolbar, BorderLayout.PAGE_START);
+        add(scrollside, BorderLayout.EAST);
     }
 
     /**
@@ -49,23 +64,52 @@ public class GEFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
+        menuBar = new javax.swing.JMenuBar();
+        fileMenu = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Graphics Editor");
         setBackground(new java.awt.Color(204, 243, 166));
-        setMaximumSize(new java.awt.Dimension(1200, 700));
         setMinimumSize(new java.awt.Dimension(1200, 700));
-        setPreferredSize(new java.awt.Dimension(1200, 700));
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                formMouseClicked(evt);
+            }
+        });
 
-        jMenu1.setText("File");
-        jMenuBar1.add(jMenu1);
+        fileMenu.setText("File");
+        menuBar.add(fileMenu);
 
-        setJMenuBar(jMenuBar1);
+        setJMenuBar(menuBar);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
+        if (canvas.getTool() == Tool.PIPETTE) {
+            Color color = new Color(getScreenComponent(this).getRGB(evt.getX(), evt.getY()));
+            switch (canvas.getPipetteChoice()) {
+                case CanvasPanel.BRUSH_COLOR: {
+                    canvas.setBrushColor(color);
+                    break;
+                }
+                case CanvasPanel.FILL_COLOR: {
+                    canvas.setFillColor(color);
+                    break;
+                }
+                case CanvasPanel.BACKGROUND_COLOR: {
+                    DrawnRectangle background = new DrawnRectangle(canvas.getStroke(), color, color, 0, 0, CanvasPanel.WIDTH, CanvasPanel.HEIGHT);
+                    canvas.setBackgroundRectangle(background);
+                    break;
+                }
+            }
+        }
+    }//GEN-LAST:event_formMouseClicked
+
+    public void setCurrentCoordinates() {
+        current_x_coordinate = (int) this.getMousePosition().getX();
+        current_y_coordinate = (int) this.getMousePosition().getX();
+    }
 
     /**
      * @param args the command line arguments
@@ -87,8 +131,44 @@ public class GEFrame extends javax.swing.JFrame {
         });
     }
 
+    public CanvasPanel getCanvas() {
+        return canvas;
+    }
+
+    public ToolbarPanel getToolbar() {
+        return toolbar;
+    }
+
+    public ScrollSidePanel getScrollside() {
+        return scrollside;
+    }
+
+    public JMenu getjMenu1() {
+        return fileMenu;
+    }
+
+    public JMenuBar getjMenuBar1() {
+        return menuBar;
+    }
+
+    public int getCurrent_x_coordinate() {
+        return current_x_coordinate;
+    }
+
+    public int getCurrent_y_coordinate() {
+        return current_y_coordinate;
+    }
+
+    public void setCurrent_x_coordinate(int current_x_coordinate) {
+        this.current_x_coordinate = current_x_coordinate;
+    }
+
+    public void setCurrent_y_coordinate(int current_y_coordinate) {
+        this.current_y_coordinate = current_y_coordinate;
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenu fileMenu;
+    private javax.swing.JMenuBar menuBar;
     // End of variables declaration//GEN-END:variables
 }
