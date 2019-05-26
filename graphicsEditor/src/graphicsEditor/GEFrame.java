@@ -5,20 +5,39 @@
  */
 package graphicsEditor;
 
+import java.awt.BorderLayout;
+import java.awt.Button;
 import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Label;
+import javax.swing.JScrollPane;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  *
  * @author VADIM
  */
 public class GEFrame extends javax.swing.JFrame {
+    CanvasPanel canvas;
+    ToolbarPanel toolbar;
+    ScrollSidePanel scrollside;
 
     /**
      * Creates new form GEFrame
      */
     public GEFrame() {
         initComponents();
-        getContentPane().setBackground(Color.getHSBColor(204,243,166));
+        getContentPane().setBackground(Color.getHSBColor(204, 243, 166));
+        canvas = new CanvasPanel();
+        toolbar = new ToolbarPanel();
+        scrollside = new ScrollSidePanel();
+        JScrollPane scrollCanvas = new JScrollPane(canvas);
+        scrollCanvas.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollCanvas.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        add(scrollCanvas,BorderLayout.CENTER);
+        add(toolbar,BorderLayout.PAGE_START);
+        add(scrollside,BorderLayout.EAST);
     }
 
     /**
@@ -30,21 +49,20 @@ public class GEFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Graphics Editor");
         setBackground(new java.awt.Color(204, 243, 166));
+        setMaximumSize(new java.awt.Dimension(1200, 700));
+        setMinimumSize(new java.awt.Dimension(1200, 700));
         setPreferredSize(new java.awt.Dimension(1200, 700));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1200, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 701, Short.MAX_VALUE)
-        );
+        jMenu1.setText("File");
+        jMenuBar1.add(jMenu1);
+
+        setJMenuBar(jMenuBar1);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -53,28 +71,13 @@ public class GEFrame extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
         try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(GEFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(GEFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(GEFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(GEFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            // Set System L&F
+            UIManager.setLookAndFeel(
+                    UIManager.getSystemLookAndFeelClassName());
+        } catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
         }
-        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -85,5 +88,7 @@ public class GEFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenuBar jMenuBar1;
     // End of variables declaration//GEN-END:variables
 }
