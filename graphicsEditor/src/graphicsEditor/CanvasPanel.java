@@ -76,6 +76,7 @@ public class CanvasPanel extends JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        setBackground(new java.awt.Color(255, 255, 255));
         setMaximumSize(new java.awt.Dimension(1800, 850));
         setMinimumSize(new java.awt.Dimension(1800, 850));
         setOpaque(false);

@@ -29,16 +29,26 @@ public class ToolbarPanel extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        insertPictureButton = new javax.swing.JButton();
+        setBackgroundButton = new javax.swing.JButton();
+        insertTextButton = new javax.swing.JButton();
+        brushButton = new javax.swing.JButton();
+        eraserButton = new javax.swing.JButton();
+        pipetteButton = new javax.swing.JButton();
         shapesPanel = new javax.swing.JPanel();
-        jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
-        jButton8 = new javax.swing.JButton();
+        rectangleButton = new javax.swing.JButton();
+        circleButton = new javax.swing.JButton();
+        fillCheckBox = new javax.swing.JCheckBox();
+        triangleButton = new javax.swing.JButton();
+        lineButton = new javax.swing.JButton();
+        fillColorButton = new javax.swing.JButton();
+        chooseColorButton = new javax.swing.JButton();
+        strokePanel = new javax.swing.JPanel();
+        strokeLabel = new javax.swing.JLabel();
+        strokeSpinner = new javax.swing.JSpinner();
+        showPanel = new javax.swing.JPanel();
 
         setForeground(new java.awt.Color(0, 150, 200));
         setMaximumSize(new java.awt.Dimension(1200, 100));
@@ -46,74 +56,152 @@ public class ToolbarPanel extends javax.swing.JPanel {
         setPreferredSize(new java.awt.Dimension(1200, 100));
         setLayout(new java.awt.GridBagLayout());
 
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/brush.png"))); // NOI18N
-        jButton1.setText("Brush");
-        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton1.setPreferredSize(new java.awt.Dimension(70, 70));
-        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        add(jButton1, new java.awt.GridBagConstraints());
+        insertPictureButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/insertPicture.png"))); // NOI18N
+        insertPictureButton.setText("Insert pic.");
+        insertPictureButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        insertPictureButton.setPreferredSize(new java.awt.Dimension(100, 90));
+        insertPictureButton.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        insertPictureButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.insets = new java.awt.Insets(0, 7, 0, 0);
+        add(insertPictureButton, gridBagConstraints);
 
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/insertPicture.png"))); // NOI18N
-        jButton2.setText("Insert pic.");
-        jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton2.setPreferredSize(new java.awt.Dimension(100, 90));
-        jButton2.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-        jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        add(jButton2, new java.awt.GridBagConstraints());
+        setBackgroundButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/background.png"))); // NOI18N
+        setBackgroundButton.setText("Set Background");
+        setBackgroundButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        setBackgroundButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 5);
+        add(setBackgroundButton, gridBagConstraints);
 
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/chooseColor.png"))); // NOI18N
-        jButton3.setText("Choose color");
-        jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        add(jButton3, new java.awt.GridBagConstraints());
+        insertTextButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/insertText.png"))); // NOI18N
+        insertTextButton.setText("Insert text");
+        insertTextButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        insertTextButton.setMaximumSize(new java.awt.Dimension(120, 90));
+        insertTextButton.setMinimumSize(new java.awt.Dimension(120, 90));
+        insertTextButton.setPreferredSize(new java.awt.Dimension(120, 90));
+        insertTextButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        add(insertTextButton, new java.awt.GridBagConstraints());
 
-        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/insertText.png"))); // NOI18N
-        jButton4.setText("Insert text");
-        jButton4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        add(jButton4, new java.awt.GridBagConstraints());
+        brushButton.setBackground(Color.ORANGE);
+        brushButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/brush.png"))); // NOI18N
+        brushButton.setText("Brush");
+        brushButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        brushButton.setMaximumSize(new java.awt.Dimension(100, 90));
+        brushButton.setMinimumSize(new java.awt.Dimension(100, 90));
+        brushButton.setPreferredSize(new java.awt.Dimension(100, 90));
+        brushButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 5);
+        add(brushButton, gridBagConstraints);
 
-        shapesPanel.setForeground(Color.yellow);
-        shapesPanel.setMinimumSize(new java.awt.Dimension(100, 100));
-        shapesPanel.setPreferredSize(new java.awt.Dimension(90, 90));
+        eraserButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/eraser.png"))); // NOI18N
+        eraserButton.setText("Eraser");
+        eraserButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        eraserButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        add(eraserButton, new java.awt.GridBagConstraints());
 
-        jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/rectangle.png"))); // NOI18N
-        jButton5.setMaximumSize(new java.awt.Dimension(40, 40));
-        jButton5.setMinimumSize(new java.awt.Dimension(40, 40));
-        jButton5.setPreferredSize(new java.awt.Dimension(40, 40));
-        shapesPanel.add(jButton5);
+        pipetteButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/pipette.png"))); // NOI18N
+        pipetteButton.setText("Pipette");
+        pipetteButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        pipetteButton.setMaximumSize(new java.awt.Dimension(100, 90));
+        pipetteButton.setMinimumSize(new java.awt.Dimension(100, 90));
+        pipetteButton.setPreferredSize(new java.awt.Dimension(100, 90));
+        pipetteButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 5);
+        add(pipetteButton, gridBagConstraints);
 
-        jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/circle.png"))); // NOI18N
-        jButton6.setMaximumSize(new java.awt.Dimension(40, 40));
-        jButton6.setMinimumSize(new java.awt.Dimension(40, 40));
-        jButton6.setPreferredSize(new java.awt.Dimension(40, 40));
-        shapesPanel.add(jButton6);
+        shapesPanel.setBackground(new Color(150, 200, 225));
+        shapesPanel.setMaximumSize(new java.awt.Dimension(150, 90));
+        shapesPanel.setMinimumSize(new java.awt.Dimension(150, 90));
+        shapesPanel.setPreferredSize(new java.awt.Dimension(150, 90));
 
-        jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/line.png"))); // NOI18N
-        jButton7.setMaximumSize(new java.awt.Dimension(40, 40));
-        jButton7.setMinimumSize(new java.awt.Dimension(40, 40));
-        jButton7.setPreferredSize(new java.awt.Dimension(40, 40));
-        shapesPanel.add(jButton7);
+        rectangleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/rectangle.png"))); // NOI18N
+        rectangleButton.setMaximumSize(new java.awt.Dimension(40, 40));
+        rectangleButton.setMinimumSize(new java.awt.Dimension(40, 40));
+        rectangleButton.setPreferredSize(new java.awt.Dimension(40, 40));
+        shapesPanel.add(rectangleButton);
 
-        jButton8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/triangle.png"))); // NOI18N
-        jButton8.setMaximumSize(new java.awt.Dimension(40, 40));
-        jButton8.setMinimumSize(new java.awt.Dimension(40, 40));
-        jButton8.setPreferredSize(new java.awt.Dimension(40, 40));
-        shapesPanel.add(jButton8);
+        circleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/circle.png"))); // NOI18N
+        circleButton.setMaximumSize(new java.awt.Dimension(40, 40));
+        circleButton.setMinimumSize(new java.awt.Dimension(40, 40));
+        circleButton.setPreferredSize(new java.awt.Dimension(40, 40));
+        shapesPanel.add(circleButton);
+
+        fillCheckBox.setBackground(new Color(150, 200, 225));
+        fillCheckBox.setText("Fill");
+        shapesPanel.add(fillCheckBox);
+
+        triangleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/triangle.png"))); // NOI18N
+        triangleButton.setMaximumSize(new java.awt.Dimension(40, 40));
+        triangleButton.setMinimumSize(new java.awt.Dimension(40, 40));
+        triangleButton.setPreferredSize(new java.awt.Dimension(40, 40));
+        shapesPanel.add(triangleButton);
+
+        lineButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/line.png"))); // NOI18N
+        lineButton.setMaximumSize(new java.awt.Dimension(40, 40));
+        lineButton.setMinimumSize(new java.awt.Dimension(40, 40));
+        lineButton.setPreferredSize(new java.awt.Dimension(40, 40));
+        shapesPanel.add(lineButton);
+
+        fillColorButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/fillColor.png"))); // NOI18N
+        fillColorButton.setMaximumSize(new java.awt.Dimension(50, 25));
+        fillColorButton.setMinimumSize(new java.awt.Dimension(50, 25));
+        fillColorButton.setPreferredSize(new java.awt.Dimension(50, 25));
+        shapesPanel.add(fillColorButton);
 
         add(shapesPanel, new java.awt.GridBagConstraints());
+
+        chooseColorButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/chooseColor.png"))); // NOI18N
+        chooseColorButton.setText("Choose color");
+        chooseColorButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        chooseColorButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 5);
+        add(chooseColorButton, gridBagConstraints);
+
+        strokePanel.setBackground(new Color(150, 200, 225));
+        strokePanel.setMaximumSize(new java.awt.Dimension(90, 90));
+        strokePanel.setMinimumSize(new java.awt.Dimension(90, 90));
+        strokePanel.setPreferredSize(new java.awt.Dimension(90, 90));
+
+        strokeLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stroke.png"))); // NOI18N
+        strokePanel.add(strokeLabel);
+        strokePanel.add(strokeSpinner);
+
+        add(strokePanel, new java.awt.GridBagConstraints());
+
+        showPanel.setBackground(Color.white);
+        showPanel.setMaximumSize(new java.awt.Dimension(90, 90));
+        showPanel.setMinimumSize(new java.awt.Dimension(90, 90));
+        showPanel.setPreferredSize(new java.awt.Dimension(90, 90));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.weightx = 5.0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 7);
+        add(showPanel, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
-    private javax.swing.JButton jButton8;
+    private javax.swing.JButton brushButton;
+    private javax.swing.JButton chooseColorButton;
+    private javax.swing.JButton circleButton;
+    private javax.swing.JButton eraserButton;
+    private javax.swing.JCheckBox fillCheckBox;
+    private javax.swing.JButton fillColorButton;
+    private javax.swing.JButton insertPictureButton;
+    private javax.swing.JButton insertTextButton;
+    private javax.swing.JButton lineButton;
+    private javax.swing.JButton pipetteButton;
+    private javax.swing.JButton rectangleButton;
+    private javax.swing.JButton setBackgroundButton;
     private javax.swing.JPanel shapesPanel;
+    private javax.swing.JPanel showPanel;
+    private javax.swing.JLabel strokeLabel;
+    private javax.swing.JPanel strokePanel;
+    private javax.swing.JSpinner strokeSpinner;
+    private javax.swing.JButton triangleButton;
     // End of variables declaration//GEN-END:variables
 }
