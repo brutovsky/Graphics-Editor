@@ -5,7 +5,19 @@
  */
 package graphicsEditor;
 
+import static graphicsEditor.CanvasPanel.HEIGHT;
+import static graphicsEditor.CanvasPanel.WIDTH;
+import static graphicsEditor.CanvasPanel.getScreenComponent;
+import graphicsEditor.drawnShapes.DrawnRectangle;
+import graphicsEditor.instruments.Tool;
 import java.awt.*;
+import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
+import javax.swing.JColorChooser;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 
 /**
  *
@@ -13,12 +25,15 @@ import java.awt.*;
  */
 public class ToolbarPanel extends javax.swing.JPanel {
 
+    private GEFrame frame;
+
     /**
      * Creates new form ToolbarPanel
      */
-    public ToolbarPanel() {
+    public ToolbarPanel(GEFrame frame) {
         initComponents();
         setBackground(new Color(150, 200, 225));
+        this.frame = frame;
     }
 
     /**
@@ -54,6 +69,11 @@ public class ToolbarPanel extends javax.swing.JPanel {
         setMaximumSize(new java.awt.Dimension(1200, 100));
         setMinimumSize(new java.awt.Dimension(1200, 100));
         setPreferredSize(new java.awt.Dimension(1200, 100));
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                formMouseClicked(evt);
+            }
+        });
         setLayout(new java.awt.GridBagLayout());
 
         insertPictureButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/insertPicture.png"))); // NOI18N
@@ -70,6 +90,11 @@ public class ToolbarPanel extends javax.swing.JPanel {
         setBackgroundButton.setText("Set Background");
         setBackgroundButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         setBackgroundButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        setBackgroundButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                setBackgroundButtonMouseClicked(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 5);
         add(setBackgroundButton, gridBagConstraints);
@@ -91,6 +116,11 @@ public class ToolbarPanel extends javax.swing.JPanel {
         brushButton.setMinimumSize(new java.awt.Dimension(100, 90));
         brushButton.setPreferredSize(new java.awt.Dimension(100, 90));
         brushButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        brushButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                brushButtonMouseReleased(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 5);
         add(brushButton, gridBagConstraints);
@@ -99,6 +129,11 @@ public class ToolbarPanel extends javax.swing.JPanel {
         eraserButton.setText("Eraser");
         eraserButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         eraserButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        eraserButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                eraserButtonMouseReleased(evt);
+            }
+        });
         add(eraserButton, new java.awt.GridBagConstraints());
 
         pipetteButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/pipette.png"))); // NOI18N
@@ -108,6 +143,11 @@ public class ToolbarPanel extends javax.swing.JPanel {
         pipetteButton.setMinimumSize(new java.awt.Dimension(100, 90));
         pipetteButton.setPreferredSize(new java.awt.Dimension(100, 90));
         pipetteButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        pipetteButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                pipetteButtonMouseReleased(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 5);
         add(pipetteButton, gridBagConstraints);
@@ -121,6 +161,11 @@ public class ToolbarPanel extends javax.swing.JPanel {
         rectangleButton.setMaximumSize(new java.awt.Dimension(40, 40));
         rectangleButton.setMinimumSize(new java.awt.Dimension(40, 40));
         rectangleButton.setPreferredSize(new java.awt.Dimension(40, 40));
+        rectangleButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                rectangleButtonMouseReleased(evt);
+            }
+        });
         shapesPanel.add(rectangleButton);
 
         circleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/circle.png"))); // NOI18N
@@ -131,6 +176,11 @@ public class ToolbarPanel extends javax.swing.JPanel {
 
         fillCheckBox.setBackground(new Color(150, 200, 225));
         fillCheckBox.setText("Fill");
+        fillCheckBox.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                fillCheckBoxStateChanged(evt);
+            }
+        });
         shapesPanel.add(fillCheckBox);
 
         triangleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/triangle.png"))); // NOI18N
@@ -149,6 +199,11 @@ public class ToolbarPanel extends javax.swing.JPanel {
         fillColorButton.setMaximumSize(new java.awt.Dimension(50, 25));
         fillColorButton.setMinimumSize(new java.awt.Dimension(50, 25));
         fillColorButton.setPreferredSize(new java.awt.Dimension(50, 25));
+        fillColorButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                fillColorButtonMouseReleased(evt);
+            }
+        });
         shapesPanel.add(fillColorButton);
 
         add(shapesPanel, new java.awt.GridBagConstraints());
@@ -157,6 +212,11 @@ public class ToolbarPanel extends javax.swing.JPanel {
         chooseColorButton.setText("Choose color");
         chooseColorButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         chooseColorButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        chooseColorButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                chooseColorButtonMouseReleased(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 5);
         add(chooseColorButton, gridBagConstraints);
@@ -168,11 +228,19 @@ public class ToolbarPanel extends javax.swing.JPanel {
 
         strokeLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stroke.png"))); // NOI18N
         strokePanel.add(strokeLabel);
+
+        strokeSpinner.setModel(new javax.swing.SpinnerNumberModel(1, 1, 10, 1));
+        strokeSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                strokeSpinnerStateChanged(evt);
+            }
+        });
         strokePanel.add(strokeSpinner);
 
         add(strokePanel, new java.awt.GridBagConstraints());
 
         showPanel.setBackground(Color.white);
+        showPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
         showPanel.setMaximumSize(new java.awt.Dimension(90, 90));
         showPanel.setMinimumSize(new java.awt.Dimension(90, 90));
         showPanel.setPreferredSize(new java.awt.Dimension(90, 90));
@@ -182,6 +250,102 @@ public class ToolbarPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 7);
         add(showPanel, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void brushButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_brushButtonMouseReleased
+        frame.getCanvas().setTool(Tool.BRUSH);
+    }//GEN-LAST:event_brushButtonMouseReleased
+
+    private void eraserButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_eraserButtonMouseReleased
+        frame.getCanvas().setTool(Tool.ERASER);
+    }//GEN-LAST:event_eraserButtonMouseReleased
+
+    private void chooseColorButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chooseColorButtonMouseReleased
+        Color color = JColorChooser.showDialog(this, "Choose brush color", frame.getCanvas().getBrushColor());
+        if (color != null) {
+            frame.getCanvas().setBrushColor(color);
+        }
+    }//GEN-LAST:event_chooseColorButtonMouseReleased
+
+    private void pipetteButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pipetteButtonMouseReleased
+        JPanel panel = new JPanel();
+        JRadioButton button1 = new JRadioButton("Brush color");
+        JRadioButton button2 = new JRadioButton("Fill color");
+        JRadioButton button3 = new JRadioButton("Background color");
+
+        ButtonGroup group = new ButtonGroup();
+        group.add(button1);
+        group.add(button2);
+        group.add(button3);
+
+        panel.add(button1);
+        panel.add(button2);
+        panel.add(button3);
+
+        JOptionPane.showMessageDialog(null, panel, "Choose color aim", JOptionPane.DEFAULT_OPTION, new ImageIcon(System.getProperty("user.dir") + "//src//icons//chooseColorAim.png"));
+        if (group.isSelected(button1.getModel())) {
+            frame.getCanvas().setPipetteChoice(CanvasPanel.BRUSH_COLOR);
+        } else if (group.isSelected(button2.getModel())) {
+            frame.getCanvas().setPipetteChoice(CanvasPanel.FILL_COLOR);
+        } else if (group.isSelected(button3.getModel())) {
+            frame.getCanvas().setPipetteChoice(CanvasPanel.BACKGROUND_COLOR);
+        } else {
+            frame.getCanvas().setPipetteChoice(0);
+            return;
+        }
+        frame.getCanvas().setTool(Tool.PIPETTE);
+    }//GEN-LAST:event_pipetteButtonMouseReleased
+
+    private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
+        if (frame.getCanvas().getTool() == Tool.PIPETTE) {
+            Color color = new Color(getScreenComponent(this).getRGB(evt.getX(), evt.getY()));
+            switch (frame.getCanvas().getPipetteChoice()) {
+                case CanvasPanel.BRUSH_COLOR: {
+                    frame.getCanvas().setBrushColor(color);
+                    break;
+                }
+                case CanvasPanel.FILL_COLOR: {
+                    frame.getCanvas().setFillColor(color);
+                    break;
+                }
+                case CanvasPanel.BACKGROUND_COLOR: {
+                    DrawnRectangle background = new DrawnRectangle(frame.getCanvas().getStroke(), color, color, 0, 0, CanvasPanel.WIDTH, CanvasPanel.HEIGHT);
+                    frame.getCanvas().setBackgroundRectangle(background);
+                    break;
+                }
+            }
+        }
+    }//GEN-LAST:event_formMouseClicked
+
+    private void setBackgroundButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_setBackgroundButtonMouseClicked
+        Color color = JColorChooser.showDialog(this, "Choose background color", frame.getCanvas().getBackgroundColor());
+        if (color != null) {
+            DrawnRectangle background = new DrawnRectangle(frame.getCanvas().getStroke(), color, color, 0, 0, CanvasPanel.WIDTH, CanvasPanel.HEIGHT);
+            frame.getCanvas().setBackgroundRectangle(background);
+        }
+    }//GEN-LAST:event_setBackgroundButtonMouseClicked
+
+    private void strokeSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_strokeSpinnerStateChanged
+        frame.getCanvas().setStroke(new BasicStroke((Integer) strokeSpinner.getValue()));
+    }//GEN-LAST:event_strokeSpinnerStateChanged
+
+    private void fillColorButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_fillColorButtonMouseReleased
+        Color color = JColorChooser.showDialog(this, "Choose fill color", frame.getCanvas().getFillColor());
+        if (color != null) {
+            frame.getCanvas().setFillColor(color);
+        }
+    }//GEN-LAST:event_fillColorButtonMouseReleased
+
+    private void rectangleButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_rectangleButtonMouseReleased
+        frame.getCanvas().setTool(Tool.SHAPE_RECTANGLE);
+    }//GEN-LAST:event_rectangleButtonMouseReleased
+
+    private void fillCheckBoxStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_fillCheckBoxStateChanged
+        if (fillCheckBox.isSelected()) {
+            frame.getCanvas().setFillColor(frame.getCanvas().getBrushColor());
+        } else {
+            frame.getCanvas().setFillColor(null);
+        }
+    }//GEN-LAST:event_fillCheckBoxStateChanged
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
