@@ -12,14 +12,18 @@ import java.awt.AWTEvent;
 import java.awt.BorderLayout;
 import java.awt.Button;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Event;
 import java.awt.Graphics;
 import java.awt.Label;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JScrollPane;
+import javax.swing.JViewport;
+import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -29,9 +33,10 @@ import javax.swing.UnsupportedLookAndFeelException;
  */
 public class GEFrame extends javax.swing.JFrame {
 
-    CanvasPanel canvas;
-    ToolbarPanel toolbar;
-    ScrollSidePanel scrollside;
+    private CanvasPanel canvas;
+    private ToolbarPanel toolbar;
+    private ScrollSidePanel scrollside;
+    private JScrollPane scrollCanvas;
 
     private int current_x_coordinate;
     private int current_y_coordinate;
@@ -45,10 +50,9 @@ public class GEFrame extends javax.swing.JFrame {
         canvas = new CanvasPanel(this);
         toolbar = new ToolbarPanel(this);
         scrollside = new ScrollSidePanel(this);
-        JScrollPane scrollCanvas = new JScrollPane(canvas);
+        scrollCanvas = new JScrollPane(canvas);
         scrollCanvas.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollCanvas.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scrollCanvas.setBackground(Color.white);
         canvas.setBackground(Color.red);
         add(scrollCanvas, BorderLayout.CENTER);
         add(toolbar, BorderLayout.PAGE_START);
@@ -66,6 +70,9 @@ public class GEFrame extends javax.swing.JFrame {
 
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
+        editMenu = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Graphics Editor");
@@ -77,8 +84,34 @@ public class GEFrame extends javax.swing.JFrame {
             }
         });
 
+        menuBar.setForeground(Color.red);
+        menuBar.setBackground(new java.awt.Color(255, 255, 255));
+        menuBar.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
         fileMenu.setText("File");
         menuBar.add(fileMenu);
+
+        editMenu.setText("Edit");
+
+        jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/back.png"))); // NOI18N
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        editMenu.add(jMenuItem1);
+
+        jMenuItem2.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Y, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/forward.png"))); // NOI18N
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
+        editMenu.add(jMenuItem2);
+
+        menuBar.add(editMenu);
 
         setJMenuBar(menuBar);
 
@@ -105,6 +138,23 @@ public class GEFrame extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_formMouseClicked
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        if (canvas.getBin().isEmpty()) {
+            return;
+        }
+        canvas.getShapes().add(canvas.getBin().pop());
+        canvas.repaint();
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        if (canvas.getShapes().size() == 1) {
+            return;
+        }
+        canvas.getBin().add(canvas.getShapes().get(canvas.getShapes().size() - 1));
+        canvas.getShapes().remove(canvas.getShapes().size() - 1);
+        canvas.repaint();
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     public void setCurrentCoordinates() {
         current_x_coordinate = (int) this.getMousePosition().getX();
@@ -159,6 +209,10 @@ public class GEFrame extends javax.swing.JFrame {
         return current_y_coordinate;
     }
 
+    public JScrollPane getScrollCanvas() {
+        return scrollCanvas;
+    }
+
     public void setCurrent_x_coordinate(int current_x_coordinate) {
         this.current_x_coordinate = current_x_coordinate;
     }
@@ -167,8 +221,16 @@ public class GEFrame extends javax.swing.JFrame {
         this.current_y_coordinate = current_y_coordinate;
     }
 
+    public void setScrollCanvas(JScrollPane scrollCanvas) {
+        this.scrollCanvas = scrollCanvas;
+    }
+
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenu editMenu;
     private javax.swing.JMenu fileMenu;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuBar menuBar;
     // End of variables declaration//GEN-END:variables
 }

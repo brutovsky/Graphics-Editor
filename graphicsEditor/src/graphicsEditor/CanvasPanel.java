@@ -5,14 +5,15 @@
  */
 package graphicsEditor;
 
-import graphicsEditor.instruments.Strokes;
 import graphicsEditor.instruments.Tool;
 import graphicsEditor.drawnShapes.DrawnRectangle;
 import graphicsEditor.drawnShapes.DrawnTriangle;
 import com.sun.webkit.ColorChooser;
 import graphicsEditor.drawnShapes.Drawable;
 import graphicsEditor.drawnShapes.DrawnCircle;
+import graphicsEditor.drawnShapes.DrawnImage;
 import graphicsEditor.drawnShapes.DrawnLine;
+import graphicsEditor.drawnShapes.DrawnText;
 import java.awt.AWTException;
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
@@ -21,6 +22,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Composite;
 import java.awt.CompositeContext;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -35,11 +37,14 @@ import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.ImageObserver;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.shape.Line;
+import javax.imageio.ImageIO;
 import javax.swing.JColorChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -54,8 +59,12 @@ public class CanvasPanel extends JPanel {
     //GEFrame
     GEFrame frame;
 
+    //Preferred size initially
+    public static final int PREFERRED_WIDTH = 1700;
+    public static final int PREFERRED_HEIGHT = 850;
+    
     //Constants
-    public static final int WIDTH = 1850;
+    public static final int WIDTH = 1725;
     public static final int HEIGHT = 875;
     //Color aim for PIPETTE
     public static final int BRUSH_COLOR = 1;
@@ -67,18 +76,25 @@ public class CanvasPanel extends JPanel {
 
     //Booleans
     private boolean isMouseClicked;
+    private boolean isMouseOnImage;
+    private boolean isMouseOnText;
 
     //The list of all shapes to be drawn
     private ArrayList<Drawable> shapes;
 
+    //The stack of the shapes in the bin
+    private Stack<Drawable> bin;
+
     //Coordinates
-    private int x1;
-    private int y1;
-    private int x2;
-    private int y2;
+    private float x1;
+    private float y1;
+    private float x2;
+    private float y2;
 
     //Drawn shape
     private Drawable s;
+    private DrawnImage image;
+    private DrawnText text;
 
     //Background rectangle
     private DrawnRectangle background;
@@ -100,7 +116,7 @@ public class CanvasPanel extends JPanel {
     //Varibles nitialization
     {
         tool = Tool.BRUSH;
-        stroke = Strokes.STROKE_1.getStroke();
+        stroke = new BasicStroke(1f);
         scale = 1f;
         brushColor = Color.BLACK;
         backgroundColor = Color.WHITE;
@@ -108,6 +124,7 @@ public class CanvasPanel extends JPanel {
         background = new DrawnRectangle(stroke, backgroundColor, backgroundColor, 0, 0, WIDTH, HEIGHT);
         shapes = new ArrayList();
         shapes.add(background);
+        bin = new Stack<>();
     }
 
     /**
@@ -116,6 +133,7 @@ public class CanvasPanel extends JPanel {
     public CanvasPanel(GEFrame frame) {
         initComponents();
         this.frame = frame;
+        setSize(PREFERRED_WIDTH, PREFERRED_HEIGHT);
     }
 
     /**
@@ -128,10 +146,10 @@ public class CanvasPanel extends JPanel {
     private void initComponents() {
 
         setBackground(new java.awt.Color(255, 255, 255));
-        setMaximumSize(new java.awt.Dimension(1800, 850));
-        setMinimumSize(new java.awt.Dimension(1800, 850));
+        setMaximumSize(new java.awt.Dimension(1690, 850));
+        setMinimumSize(new java.awt.Dimension(1690, 850));
         setOpaque(false);
-        setPreferredSize(new java.awt.Dimension(1800, 850));
+        setPreferredSize(new java.awt.Dimension(1690, 850));
         addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseDragged(java.awt.event.MouseEvent evt) {
                 formMouseDragged(evt);
@@ -148,62 +166,71 @@ public class CanvasPanel extends JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void formMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseDragged
-        x2 = evt.getX();
-        y2 = evt.getY();
-        switch (tool) {
-            case INSERT_PICTURE: {
+        if (isMouseClicked) {
+            x2 = evt.getX()/scale;
+            y2 = evt.getY()/scale;
+            switch (tool) {
+                case INSERT_PICTURE: {
+                    image = new DrawnImage(image.getImage(), (int)x1, (int)y1);
+                    break;
+                }
+                case INSERT_TEXT: {
+                    setText(new DrawnText(text.getFont(), text.getText(), text.getColor(), (int)x1, (int)y1));
+                    break;
+                }
+                case BRUSH: {
+                    shapes.add(new DrawnLine(stroke, brushColor, x1, y1, x2, y2));
+                    break;
+                }
+                case ERASER: {
+                    shapes.add(new DrawnLine(stroke, backgroundColor, x1, y1, x2, y2));
+                    break;
+                }
+                case PIPETTE: {
 
-                break;
-            }
-            case INSERT_TEXT: {
+                    break;
+                }
+                case SHAPE_RECTANGLE: {
+                    s = new DrawnRectangle(stroke, brushColor, fillColor, (int)x1, (int)y1, (int)x2 - (int)x1, (int)y2 - (int)y1);
+                    repaint();
+                    return;
+                }
+                case SHAPE_CIRCLE: {
 
-                break;
-            }
-            case BRUSH: {
-                shapes.add(new DrawnLine(stroke, brushColor, x1, y1, x2, y2));
-                break;
-            }
-            case ERASER: {
-                shapes.add(new DrawnLine(stroke, backgroundColor, x1, y1, x2, y2));
-                break;
-            }
-            case PIPETTE: {
-                break;
-            }
-            case SHAPE_RECTANGLE: {
-                s = new DrawnRectangle(stroke, brushColor, fillColor, x1, y1, x2 - x1, y2 - y1);
-                repaint();
-                return;
-            }
-            case SHAPE_CIRCLE: {
+                    break;
+                }
+                case SHAPE_TRIANGLE: {
 
-                break;
-            }
-            case SHAPE_TRIANGLE: {
+                    break;
+                }
+                case SHAPE_LINE: {
 
-                break;
-            }
-            case SHAPE_LINE: {
+                    break;
+                }
+                case NO_TOOL: {
 
-                break;
+                    break;
+                }
             }
+            repaint();
+            x1 = x2;
+            y1 = y2;
         }
-        repaint();
-        x1 = x2;
-        y1 = y2;
     }//GEN-LAST:event_formMouseDragged
 
     private void formMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMousePressed
         isMouseClicked = true;
-        x1 = evt.getX();
-        y1 = evt.getY();
+        x1 = evt.getX()/scale;
+        y1 = evt.getY()/scale;
         switch (tool) {
             case INSERT_PICTURE: {
-
+                isMouseOnImage = true;
+                image = new DrawnImage(image.getImage(), (int)x1, (int)y1);
                 break;
             }
             case INSERT_TEXT: {
-
+                isMouseOnText = true;
+                setText(new DrawnText(text.getFont(), text.getText(), text.getColor(), (int)x1, (int)y1));
                 break;
             }
             case BRUSH: {
@@ -236,7 +263,7 @@ public class CanvasPanel extends JPanel {
                 break;
             }
             case SHAPE_RECTANGLE: {
-                s = new DrawnRectangle(stroke, brushColor, fillColor, x1, y1, 5, 5);
+                s = new DrawnRectangle(stroke, brushColor, fillColor, (int)x1, (int)y1, 5, 5);
                 break;
             }
             case SHAPE_CIRCLE: {
@@ -251,15 +278,18 @@ public class CanvasPanel extends JPanel {
 
                 break;
             }
+            case NO_TOOL: {
+
+                break;
+            }
         }
         repaint();
     }//GEN-LAST:event_formMousePressed
 
     private void formMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseReleased
         isMouseClicked = false;
-        if (s != null) {
-            shapes.add(s);
-        }
+        reset();
+        repaint();
     }//GEN-LAST:event_formMouseReleased
 
     @Override
@@ -271,6 +301,21 @@ public class CanvasPanel extends JPanel {
         g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         //DRAWING
         for (Drawable s : shapes) {
+            if (s instanceof DrawnImage) {
+                DrawnImage im = (DrawnImage) s;
+                g2d.drawImage((BufferedImage) im.getImage(), im.getX(), im.getY(), null);
+                continue;
+            }
+            if (s instanceof DrawnText) {
+                DrawnText t = (DrawnText) s;
+                Font current_font = g2d.getFont();
+                g2d.setFont(t.getFont());
+                g2d.setColor(t.getColor());
+                g2d.drawString(t.getText(), t.getX(), t.getY());
+                g2d.setColor(s.getColor());
+                g2d.setFont(current_font);
+                continue;
+            }
             if (s.getFillColor() != null) {
                 g2d.setColor(s.getFillColor());
                 g2d.fill((Shape) s);
@@ -278,7 +323,6 @@ public class CanvasPanel extends JPanel {
             g2d.setStroke(s.getStroke());
             g2d.setColor(s.getColor());
             g2d.draw((Shape) s);
-
         }
         //Draw Shape s
         if (s != null) {
@@ -288,51 +332,20 @@ public class CanvasPanel extends JPanel {
             }
             g2d.setStroke(s.getStroke());
             g2d.setColor(s.getColor());
-            g2d.draw((Shape) s);  
+            g2d.draw((Shape) s);
         }
 
-    }
+        if (image != null) {
+            g2d.drawImage(image.getImage(), image.getX(), image.getY(), null);
 
-    private Polygon selectPolygon(Graphics2D g) {
-
-        /*isMouseClicked = false;
-        //Color color = this.getComponentAt(x, y)
-        System.out.println(new Color(getScreenComponent(this).getRGB(x, y)).toString());
-        ArrayList<Point> points = new ArrayList<>();
-        if (shapes.empty()) {
-            return null;
-        }
-        boolean isEdge = false;
-        int px = x;
-        int py = y;
-        for (Shape sh : shapes) {
-            if (sh.contains(new Point(x, y))) {
-                System.out.println(x + " , " + y);
-                break;
-            }
         }
 
-        do {
-            Point point = new Point(px, py);
-            for (Shape sh : shapes) {
-                if (sh.contains(point)) {
+        if (text != null) {
+            g2d.setFont(text.getFont());
+            g2d.setColor(text.getColor());
+            g2d.drawString(text.getText(), text.getX(), text.getY());
 
-                    isEdge = true;
-                    break;
-                }
-            }
-            px++;
-            if (px == this.getWidth()) {
-                return null;
-            }
-        } while (!isEdge);
-
-        points.add(new Point(px, py));
-        g.drawRect(px, py, 100, 100);
-        /*while (true) {
-
-        }*/
-        return null;
+        }
 
     }
 
@@ -354,19 +367,19 @@ public class CanvasPanel extends JPanel {
         return shapes;
     }
 
-    public int getX1() {
+    public float getX1() {
         return x1;
     }
 
-    public int getY1() {
+    public float getY1() {
         return y1;
     }
 
-    public int getX2() {
+    public float getX2() {
         return x2;
     }
 
-    public int getY2() {
+    public float getY2() {
         return y2;
     }
 
@@ -404,6 +417,26 @@ public class CanvasPanel extends JPanel {
 
     public int getPipetteChoice() {
         return pipetteChoice;
+    }
+
+    public DrawnImage getImage() {
+        return image;
+    }
+
+    public DrawnText getText() {
+        return text;
+    }
+
+    public Stack<Drawable> getBin() {
+        return bin;
+    }
+
+    public boolean isIsMouseOnImage() {
+        return isMouseOnImage;
+    }
+
+    public boolean isIsMouseOnText() {
+        return isMouseOnText;
     }
 
     public void setIsMouseClicked(boolean isMouseClicked) {
@@ -467,6 +500,45 @@ public class CanvasPanel extends JPanel {
 
     public void setPipetteChoice(int pipetteChoice) {
         this.pipetteChoice = pipetteChoice;
+    }
+
+    public void setImage(BufferedImage image, int x, int y) {
+        this.image = new DrawnImage(image, x, y);
+    }
+
+    public void setText(DrawnText text) {
+        this.text = text;
+    }
+
+    public void setIsMouseOnImage(boolean isMouseOnImage) {
+        this.isMouseOnImage = isMouseOnImage;
+    }
+
+    public void setIsMouseOnText(boolean isMouseOnText) {
+        this.isMouseOnText = isMouseOnText;
+    }
+
+    public void setBin(Stack<Drawable> bin) {
+        this.bin = bin;
+    }
+
+    public void reset() {
+        if (isMouseOnImage) {
+            isMouseOnImage = false;
+            setTool(Tool.NO_TOOL);
+            shapes.add(image);
+            image = null;
+        }
+        if (isMouseOnText) {
+            isMouseOnText = false;
+            setTool(Tool.NO_TOOL);
+            shapes.add(text);
+            text = null;
+        }
+        if (s != null) {
+            shapes.add(s);
+            s = null;
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

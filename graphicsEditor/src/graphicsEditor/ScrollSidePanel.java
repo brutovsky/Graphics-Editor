@@ -9,7 +9,9 @@ import static graphicsEditor.CanvasPanel.getScreenComponent;
 import graphicsEditor.drawnShapes.DrawnRectangle;
 import graphicsEditor.instruments.Tool;
 import java.awt.Color;
+import java.awt.Dimension;
 import javax.swing.JFrame;
+import javax.swing.JScrollPane;
 
 /**
  *
@@ -37,9 +39,30 @@ public class ScrollSidePanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        slider = new javax.swing.JSlider();
+
         addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 formMouseClicked(evt);
+            }
+        });
+
+        slider.setMajorTickSpacing(30);
+        slider.setMaximum(400);
+        slider.setMinimum(100);
+        slider.setMinorTickSpacing(30);
+        slider.setOrientation(javax.swing.JSlider.VERTICAL);
+        slider.setPaintLabels(true);
+        slider.setPaintTicks(true);
+        slider.setPreferredSize(new java.awt.Dimension(80, 450));
+        slider.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                sliderStateChanged(evt);
+            }
+        });
+        slider.addMouseWheelListener(new java.awt.event.MouseWheelListener() {
+            public void mouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
+                sliderMouseWheelMoved(evt);
             }
         });
 
@@ -47,11 +70,21 @@ public class ScrollSidePanel extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
+            .addGap(0, 200, Short.MAX_VALUE)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(slider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 700, Short.MAX_VALUE)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(slider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -76,7 +109,21 @@ public class ScrollSidePanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_formMouseClicked
 
+    private void sliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sliderStateChanged
+        frame.getCanvas().setScale(slider.getValue() / 100f);
+        System.out.println(frame.getCanvas().getPreferredSize().toString());
+        Dimension dim = new Dimension((int) (CanvasPanel.PREFERRED_WIDTH * frame.getCanvas().getScale()), (int) (CanvasPanel.PREFERRED_HEIGHT * frame.getCanvas().getScale()));
+        frame.getCanvas().setPreferredSize(dim);
+        frame.getCanvas().repaint();
+        frame.getCanvas().revalidate();
+    }//GEN-LAST:event_sliderStateChanged
+
+    private void sliderMouseWheelMoved(java.awt.event.MouseWheelEvent evt) {//GEN-FIRST:event_sliderMouseWheelMoved
+        slider.setValue(slider.getValue() + (int) evt.getPreciseWheelRotation());
+    }//GEN-LAST:event_sliderMouseWheelMoved
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JSlider slider;
     // End of variables declaration//GEN-END:variables
 }

@@ -8,16 +8,30 @@ package graphicsEditor;
 import static graphicsEditor.CanvasPanel.HEIGHT;
 import static graphicsEditor.CanvasPanel.WIDTH;
 import static graphicsEditor.CanvasPanel.getScreenComponent;
+import graphicsEditor.drawnShapes.DrawnImage;
 import graphicsEditor.drawnShapes.DrawnRectangle;
+import graphicsEditor.drawnShapes.DrawnText;
 import graphicsEditor.instruments.Tool;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
+import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JSpinner;
+import javax.swing.JTextField;
+import javax.swing.filechooser.FileFilter;
 
 /**
  *
@@ -82,6 +96,11 @@ public class ToolbarPanel extends javax.swing.JPanel {
         insertPictureButton.setPreferredSize(new java.awt.Dimension(100, 90));
         insertPictureButton.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         insertPictureButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        insertPictureButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                insertPictureButtonMouseReleased(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.insets = new java.awt.Insets(0, 7, 0, 0);
         add(insertPictureButton, gridBagConstraints);
@@ -106,6 +125,11 @@ public class ToolbarPanel extends javax.swing.JPanel {
         insertTextButton.setMinimumSize(new java.awt.Dimension(120, 90));
         insertTextButton.setPreferredSize(new java.awt.Dimension(120, 90));
         insertTextButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        insertTextButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                insertTextButtonMouseReleased(evt);
+            }
+        });
         add(insertTextButton, new java.awt.GridBagConstraints());
 
         brushButton.setBackground(Color.ORANGE);
@@ -252,14 +276,17 @@ public class ToolbarPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void brushButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_brushButtonMouseReleased
+        frame.getCanvas().reset();
         frame.getCanvas().setTool(Tool.BRUSH);
     }//GEN-LAST:event_brushButtonMouseReleased
 
     private void eraserButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_eraserButtonMouseReleased
+        frame.getCanvas().reset();
         frame.getCanvas().setTool(Tool.ERASER);
     }//GEN-LAST:event_eraserButtonMouseReleased
 
     private void chooseColorButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chooseColorButtonMouseReleased
+        frame.getCanvas().reset();
         Color color = JColorChooser.showDialog(this, "Choose brush color", frame.getCanvas().getBrushColor());
         if (color != null) {
             frame.getCanvas().setBrushColor(color);
@@ -267,6 +294,7 @@ public class ToolbarPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_chooseColorButtonMouseReleased
 
     private void pipetteButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pipetteButtonMouseReleased
+        frame.getCanvas().reset();
         JPanel panel = new JPanel();
         JRadioButton button1 = new JRadioButton("Brush color");
         JRadioButton button2 = new JRadioButton("Fill color");
@@ -296,6 +324,7 @@ public class ToolbarPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_pipetteButtonMouseReleased
 
     private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
+        frame.getCanvas().reset();
         if (frame.getCanvas().getTool() == Tool.PIPETTE) {
             Color color = new Color(getScreenComponent(this).getRGB(evt.getX(), evt.getY()));
             switch (frame.getCanvas().getPipetteChoice()) {
@@ -317,6 +346,7 @@ public class ToolbarPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_formMouseClicked
 
     private void setBackgroundButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_setBackgroundButtonMouseClicked
+        frame.getCanvas().reset();
         Color color = JColorChooser.showDialog(this, "Choose background color", frame.getCanvas().getBackgroundColor());
         if (color != null) {
             DrawnRectangle background = new DrawnRectangle(frame.getCanvas().getStroke(), color, color, 0, 0, CanvasPanel.WIDTH, CanvasPanel.HEIGHT);
@@ -325,10 +355,12 @@ public class ToolbarPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_setBackgroundButtonMouseClicked
 
     private void strokeSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_strokeSpinnerStateChanged
+        frame.getCanvas().reset();
         frame.getCanvas().setStroke(new BasicStroke((Integer) strokeSpinner.getValue()));
     }//GEN-LAST:event_strokeSpinnerStateChanged
 
     private void fillColorButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_fillColorButtonMouseReleased
+        frame.getCanvas().reset();
         Color color = JColorChooser.showDialog(this, "Choose fill color", frame.getCanvas().getFillColor());
         if (color != null) {
             frame.getCanvas().setFillColor(color);
@@ -336,16 +368,135 @@ public class ToolbarPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_fillColorButtonMouseReleased
 
     private void rectangleButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_rectangleButtonMouseReleased
+        frame.getCanvas().reset();
         frame.getCanvas().setTool(Tool.SHAPE_RECTANGLE);
     }//GEN-LAST:event_rectangleButtonMouseReleased
 
     private void fillCheckBoxStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_fillCheckBoxStateChanged
+        frame.getCanvas().reset();
         if (fillCheckBox.isSelected()) {
             frame.getCanvas().setFillColor(frame.getCanvas().getBrushColor());
         } else {
             frame.getCanvas().setFillColor(null);
         }
     }//GEN-LAST:event_fillCheckBoxStateChanged
+
+    private void insertPictureButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_insertPictureButtonMouseReleased
+        frame.getCanvas().reset();
+        JFileChooser picChooser = new JFileChooser(System.getProperty("user.home"));
+        picChooser.setFileFilter(new FileFilter() {
+            @Override
+            public boolean accept(File f) {
+                String fileName = f.getName().toString();
+                if (fileName.endsWith(".png")) {
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public String getDescription() {
+                return ".png";
+            }
+        });
+        int choice = picChooser.showOpenDialog(null);
+        switch (choice) {
+            case JFileChooser.APPROVE_OPTION: {
+                try {
+                    BufferedImage image = ImageIO.read(picChooser.getSelectedFile());
+                    if (image == null) {
+                        throw new IOException();
+                    }
+                    frame.getCanvas().setImage(image, 0, 0);
+                    frame.getCanvas().repaint();
+                    frame.getCanvas().setTool(Tool.INSERT_PICTURE);
+                    frame.getCanvas().setIsMouseOnImage(true);
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(null, "Choose picture(file ending with .png, .jpg...)", "Invalid file chosen", JOptionPane.ERROR_MESSAGE);
+                }
+                break;
+            }
+        }
+    }//GEN-LAST:event_insertPictureButtonMouseReleased
+
+    private void insertTextButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_insertTextButtonMouseReleased
+        frame.getCanvas().reset();
+        JPanel panel = new JPanel();
+        JComboBox comboBox = new JComboBox();
+        Font font;
+        DrawnText text;
+        comboBox.addItem("Arial");
+        comboBox.addItem("Comic Sans MS");
+        comboBox.addItem("Courier New");
+        comboBox.addItem("Georgia1");
+        comboBox.addItem("Impact");
+        comboBox.addItem("Lucida");
+        comboBox.addItem("Palatino Linotype");
+        comboBox.addItem("Tahoma");
+        comboBox.addItem("Times New Roman");
+        comboBox.addItem("Trebuchet MS1");
+        comboBox.addItem("Verdana");
+        comboBox.addItem("MS Sans Serif4");
+        comboBox.addItem("MS Serif4");
+        
+
+        JRadioButton button1 = new JRadioButton("Italic");
+        JRadioButton button2 = new JRadioButton("Bold");
+
+        ButtonGroup group = new ButtonGroup();
+        group.add(button1);
+        group.add(button2);
+
+        button1.setSelected(true);
+        
+        JSpinner spinner = new JSpinner();
+        spinner.setModel(new javax.swing.SpinnerNumberModel(12, 12, 72, 1));
+
+        JTextField textField = new JTextField("Enter your text");
+        textField.setBounds(0, 0, 80, 40);
+
+        panel.add(comboBox);
+        panel.add(button1);
+        panel.add(button2);
+        panel.add(spinner);
+        panel.add(textField);
+        panel.setLayout(new FlowLayout());
+        JOptionPane.showMessageDialog(null, panel, "Choose your font", JOptionPane.DEFAULT_OPTION, null);
+        if (group.isSelected(button1.getModel())) {
+            font = new Font((String) comboBox.getSelectedItem(), Font.ITALIC, (Integer) spinner.getValue());
+            text = new DrawnText(font, textField.getText(), frame.getCanvas().getBrushColor(), (Integer) spinner.getValue(), (Integer) spinner.getValue());
+            frame.getCanvas().setText(text);
+            frame.getCanvas().setTool(Tool.INSERT_TEXT);
+            frame.getCanvas().repaint();
+            frame.getCanvas().setIsMouseOnText(true);
+        } else if (group.isSelected(button2.getModel())) {
+            font = new Font((String) comboBox.getSelectedItem(), Font.BOLD, (Integer) spinner.getValue());
+            text = new DrawnText(font, textField.getText(), frame.getCanvas().getBrushColor(), (Integer) spinner.getValue(), (Integer) spinner.getValue());
+            frame.getCanvas().setText(text);
+            frame.getCanvas().setTool(Tool.INSERT_TEXT);
+            frame.getCanvas().repaint();
+            frame.getCanvas().setIsMouseOnText(true);
+        }
+        /*
+        Arial, Arial, Helvetica, sans-serif	Arial, Arial, Helvetica, sans-serif
+Comic Sans MS, Comic Sans MS5, cursive	Comic Sans MS, Comic Sans MS5, cursive
+Courier New, Courier New, monospace	Courier New, Courier New, monospace
+Georgia1, Georgia, serif	Georgia1, Georgia, serif
+Impact, Impact5, Charcoal6, sans-serif	Impact, Impact5, Charcoal6, sans-serif
+Lucida Console, Monaco5, monospace	Lucida Console, Monaco5, monospace
+Palatino Linotype, Book Antiqua3, Palatino, serif	Palatino Linotype, Book Antiqua3, Palatino, serif
+Tahoma, Geneva, sans-serif	Tahoma, Geneva, sans-serif
+Times New Roman, Times New Roman, Times, serif	Times New Roman, Times New Roman, Times, serif
+Trebuchet MS1, Trebuchet MS, sans-serif	Trebuchet MS1, Trebuchet MS, sans-serif
+Verdana, Verdana, Geneva, sans-serif	Verdana, Verdana, Geneva, sans-serif
+Symbol, Symbol (Symbol2, Symbol2)	Symbol, Symbol (Symbol2, Symbol2)
+Webdings, Webdings (Webdings2, Webdings2)	Webdings, Webdings (Webdings2, Webdings2)
+Wingdings, Zapf Dingbats (Wingdings2, Zapf Dingbats2)	Wingdings, Zapf Dingbats (Wingdings2, Zapf Dingbats2)
+MS Sans Serif4, Geneva, sans-serif	MS Sans Serif4, Geneva, sans-serif
+MS Serif4, New York6, serif
+         */
+        //frame.getCanvas().setTool(Tool.PIPETTE);
+    }//GEN-LAST:event_insertTextButtonMouseReleased
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
