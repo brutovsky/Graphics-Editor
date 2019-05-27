@@ -62,7 +62,7 @@ public class CanvasPanel extends JPanel {
     //Preferred size initially
     public static final int PREFERRED_WIDTH = 1700;
     public static final int PREFERRED_HEIGHT = 850;
-    
+
     //Constants
     public static final int WIDTH = 1725;
     public static final int HEIGHT = 875;
@@ -167,15 +167,15 @@ public class CanvasPanel extends JPanel {
 
     private void formMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseDragged
         if (isMouseClicked) {
-            x2 = evt.getX()/scale;
-            y2 = evt.getY()/scale;
+            x2 = evt.getX() / scale;
+            y2 = evt.getY() / scale;
             switch (tool) {
                 case INSERT_PICTURE: {
-                    image = new DrawnImage(image.getImage(), (int)x1, (int)y1);
+                    image = new DrawnImage(image.getImage(), (int) x1, (int) y1);
                     break;
                 }
                 case INSERT_TEXT: {
-                    setText(new DrawnText(text.getFont(), text.getText(), text.getColor(), (int)x1, (int)y1));
+                    setText(new DrawnText(text.getFont(), text.getText(), text.getColor(), (int) x1, (int) y1));
                     break;
                 }
                 case BRUSH: {
@@ -191,21 +191,24 @@ public class CanvasPanel extends JPanel {
                     break;
                 }
                 case SHAPE_RECTANGLE: {
-                    s = new DrawnRectangle(stroke, brushColor, fillColor, (int)x1, (int)y1, (int)x2 - (int)x1, (int)y2 - (int)y1);
+                    s = new DrawnRectangle(stroke, brushColor, fillColor, (int) x1, (int) y1, (int) x2 - (int) x1, (int) y2 - (int) y1);
                     repaint();
                     return;
                 }
                 case SHAPE_CIRCLE: {
-
-                    break;
+                    s = new DrawnCircle(stroke, brushColor, fillColor, (int) x1, (int) y1, (int) x2 - (int) x1, (int) y2 - (int) y1);
+                    repaint();
+                    return;
                 }
                 case SHAPE_TRIANGLE: {
-
-                    break;
+                    s = new DrawnTriangle(stroke, brushColor, fillColor, (int) x1, (int) y1, (int) x2, (int) y2, (int) x2, (int) y1);
+                    repaint();
+                    return;
                 }
                 case SHAPE_LINE: {
-
-                    break;
+                    s = new DrawnLine(stroke, brushColor, (double) x1, (double) y1, (double) x2, (double) y2);
+                    repaint();
+                    return;
                 }
                 case NO_TOOL: {
 
@@ -220,17 +223,17 @@ public class CanvasPanel extends JPanel {
 
     private void formMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMousePressed
         isMouseClicked = true;
-        x1 = evt.getX()/scale;
-        y1 = evt.getY()/scale;
+        x1 = evt.getX() / scale;
+        y1 = evt.getY() / scale;
         switch (tool) {
             case INSERT_PICTURE: {
                 isMouseOnImage = true;
-                image = new DrawnImage(image.getImage(), (int)x1, (int)y1);
+                image = new DrawnImage(image.getImage(), (int) x1, (int) y1);
                 break;
             }
             case INSERT_TEXT: {
                 isMouseOnText = true;
-                setText(new DrawnText(text.getFont(), text.getText(), text.getColor(), (int)x1, (int)y1));
+                setText(new DrawnText(text.getFont(), text.getText(), text.getColor(), (int) x1, (int) y1));
                 break;
             }
             case BRUSH: {
@@ -263,19 +266,19 @@ public class CanvasPanel extends JPanel {
                 break;
             }
             case SHAPE_RECTANGLE: {
-                s = new DrawnRectangle(stroke, brushColor, fillColor, (int)x1, (int)y1, 5, 5);
+                s = new DrawnRectangle(stroke, brushColor, fillColor, (int) x1, (int) y1, 5, 5);
                 break;
             }
             case SHAPE_CIRCLE: {
-
+                s = new DrawnCircle(stroke, brushColor, fillColor, (int) x1, (int) y1, 5, 5);
                 break;
             }
             case SHAPE_TRIANGLE: {
-
+                s = new DrawnTriangle(stroke, brushColor, fillColor, (int) x1, (int) y1, (int) x1 + 5, (int) y1 - 5, (int) x1 + 10, (int) y1);
                 break;
             }
             case SHAPE_LINE: {
-
+                s = new DrawnLine(stroke, brushColor, (double) x1, (double) y1, (double) x1, (double) y1);
                 break;
             }
             case NO_TOOL: {
@@ -541,6 +544,8 @@ public class CanvasPanel extends JPanel {
         }
     }
 
+    
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
 }
