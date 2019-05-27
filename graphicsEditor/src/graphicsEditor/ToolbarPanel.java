@@ -5,10 +5,7 @@
  */
 package graphicsEditor;
 
-import static graphicsEditor.CanvasPanel.HEIGHT;
-import static graphicsEditor.CanvasPanel.WIDTH;
 import static graphicsEditor.CanvasPanel.getScreenComponent;
-import graphicsEditor.drawnShapes.DrawnImage;
 import graphicsEditor.drawnShapes.DrawnRectangle;
 import graphicsEditor.drawnShapes.DrawnText;
 import graphicsEditor.instruments.Tool;
@@ -16,16 +13,11 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
-import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -33,16 +25,17 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileFilter;
 
-/**
+/**Panel for the toolbar
  *
- * @author VADIM
+ * @author VADYM NAKYTNIAK
  */
 public class ToolbarPanel extends javax.swing.JPanel {
 
-    private GEFrame frame;
+    final private GEFrame frame;
 
     /**
      * Creates new form ToolbarPanel
+     * @param frame
      */
     public ToolbarPanel(GEFrame frame) {
         setBackground(new Color(150, 200, 225));
@@ -441,11 +434,8 @@ public class ToolbarPanel extends javax.swing.JPanel {
         picChooser.setFileFilter(new FileFilter() {
             @Override
             public boolean accept(File f) {
-                String fileName = f.getName().toString();
-                if (fileName.endsWith(".png")) {
-                    return true;
-                }
-                return false;
+                String fileName = f.getName();
+                return fileName.endsWith(".png");
             }
 
             @Override
@@ -563,6 +553,9 @@ public class ToolbarPanel extends javax.swing.JPanel {
         updatePreview();
     }//GEN-LAST:event_fillCheckBoxMouseReleased
 
+    /**
+     * Method to update the preview panel
+     */
     public void updatePreview() {
         ((PreviewPanel)previewPanel).update(frame.getCanvas().getTool(),frame.getCanvas().getStroke(),frame.getCanvas().getBrushColor(),frame.getCanvas().getFillColor());
     }

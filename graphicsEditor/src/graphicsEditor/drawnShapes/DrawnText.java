@@ -8,11 +8,10 @@ package graphicsEditor.drawnShapes;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Stroke;
-import java.awt.image.BufferedImage;
 
 /**
  *
- * @author VADIM
+ * @author VADYM NAKYTNIAK
  */
 public class DrawnText implements Drawable {
 
@@ -41,7 +40,7 @@ public class DrawnText implements Drawable {
 
     /**
      *
-     * @return null
+     * @return color
      */
     @Override
     public Color getColor() {
@@ -50,11 +49,11 @@ public class DrawnText implements Drawable {
 
     /**
      *
-     * @return null
+     * @return color
      */
     @Override
     public Color getFillColor() {
-        return null;
+        return color;
     }
 
     public int getX() {
@@ -85,19 +84,21 @@ public class DrawnText implements Drawable {
     /**
      * EMPTY method
      *
-     * @param stroke
+     * @param color
      */
     @Override
     public void setColor(Color color) {
+        this.color = color;
     }
 
     /**
-     * EMPTY method
      *
-     * @param stroke
+     *
+     * @param color
      */
     @Override
     public void setFillColor(Color color) {
+        this.color = color;
     }
 
     public void setX(int x) {

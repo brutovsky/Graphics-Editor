@@ -5,12 +5,9 @@
  */
 package graphicsEditor;
 
-import static graphicsEditor.CanvasPanel.getScreenComponent;
 import graphicsEditor.drawnShapes.DrawnCircle;
-import graphicsEditor.drawnShapes.DrawnImage;
 import graphicsEditor.drawnShapes.DrawnLine;
 import graphicsEditor.drawnShapes.DrawnRectangle;
-import graphicsEditor.drawnShapes.DrawnText;
 import graphicsEditor.drawnShapes.DrawnTriangle;
 import graphicsEditor.instruments.Tool;
 import java.awt.Color;
@@ -20,13 +17,12 @@ import java.awt.Stroke;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import javax.swing.JOptionPane;
 
-/**
+/**Panel for previewing all tools
  *
- * @author VADIM
+ * @author VADYM NAKYTNIAK
  */
 public class PreviewPanel extends javax.swing.JPanel {
 
@@ -37,6 +33,11 @@ public class PreviewPanel extends javax.swing.JPanel {
 
     /**
      * Creates new form PreviewPanel
+     *
+     * @param tool
+     * @param stroke
+     * @param color
+     * @param fillColor
      */
     public PreviewPanel(Tool tool, Stroke stroke, Color color, Color fillColor) {
         initComponents();
@@ -59,7 +60,7 @@ public class PreviewPanel extends javax.swing.JPanel {
                     image = (ImageIO.read(new File(System.getProperty("user.dir") + "\\src\\icons\\insertPicture.png")));
                     g2d.drawImage(image, 5, 10, null);
                 } catch (IOException ex) {
-
+                    JOptionPane.showMessageDialog(null, "Image insertPicture.png is not found", "Image is not foun", JOptionPane.ERROR_MESSAGE);
                 }
                 break;
             }
@@ -70,7 +71,7 @@ public class PreviewPanel extends javax.swing.JPanel {
                     image = (ImageIO.read(new File(System.getProperty("user.dir") + "\\src\\icons\\insertText.png")));
                     g2d.drawImage(image, 0, 20, null);
                 } catch (IOException ex) {
-
+                    JOptionPane.showMessageDialog(null, "Image insertText.png is not found", "Image is not foun", JOptionPane.ERROR_MESSAGE);
                 }
                 break;
             }
@@ -84,7 +85,7 @@ public class PreviewPanel extends javax.swing.JPanel {
                     image = (ImageIO.read(new File(System.getProperty("user.dir") + "\\src\\icons\\eraser.png")));
                     g2d.drawImage(image, 10, 20, null);
                 } catch (IOException ex) {
-
+                    JOptionPane.showMessageDialog(null, "Image eraser.png is not found", "Image is not foun", JOptionPane.ERROR_MESSAGE);
                 }
                 break;
             }
@@ -94,7 +95,7 @@ public class PreviewPanel extends javax.swing.JPanel {
                     image = (ImageIO.read(new File(System.getProperty("user.dir") + "\\src\\icons\\pipette.png")));
                     g2d.drawImage(image, 20, 10, null);
                 } catch (IOException ex) {
-
+                    JOptionPane.showMessageDialog(null, "Image pipette.png is not found", "Image is not foun", JOptionPane.ERROR_MESSAGE);
                 }
                 break;
             }
@@ -129,7 +130,7 @@ public class PreviewPanel extends javax.swing.JPanel {
                 break;
             }
             case SHAPE_LINE: {
-                DrawnLine rect = new DrawnLine(stroke, color , 20, 20, 70, 70);
+                DrawnLine rect = new DrawnLine(stroke, color, 20, 20, 70, 70);
                 g2d.draw(rect);
                 break;
             }
@@ -180,26 +181,6 @@ public class PreviewPanel extends javax.swing.JPanel {
         repaint();
     }
 
-    /*
-    
-    showPanel = new javax.swing.JPanel();
-showPanel.setBackground(Color.white);
-showPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
-
-showPanel.setMaximumSize(new java.awt.Dimension(90, 90));
-
-showPanel.setMinimumSize(new java.awt.Dimension(90, 90));
-
-showPanel.setPreferredSize(new java.awt.Dimension(90, 90));
-
-// Code of sub-components and layout - not shown here
-
-gridBagConstraints = new java.awt.GridBagConstraints();
-gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-gridBagConstraints.weightx = 5.0;
-gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 7);
-add(showPanel, gridBagConstraints);
-     */
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

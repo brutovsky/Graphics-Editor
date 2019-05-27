@@ -10,47 +10,35 @@ import graphicsEditor.drawnShapes.Drawable;
 import graphicsEditor.drawnShapes.DrawnImage;
 import graphicsEditor.drawnShapes.DrawnRectangle;
 import graphicsEditor.instruments.Tool;
-import java.awt.AWTEvent;
 import java.awt.BorderLayout;
-import java.awt.Button;
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Event;
-import java.awt.Graphics;
-import java.awt.Label;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
-import javax.swing.JViewport;
-import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileFilter;
 
 /**
+ * The main frame of the application
  *
- * @author VADIM
+ * @author VADYM NAKYTNIAK
  */
 public class GEFrame extends javax.swing.JFrame {
 
-    private CanvasPanel canvas;
-    private ToolbarPanel toolbar;
-    private ScrollSidePanel scrollside;
-    private JScrollPane scrollCanvas;
+    final private CanvasPanel canvas; // Canvas for drawing on
+    final private ToolbarPanel toolbar; // Panel with all tools
+    final private ScrollSidePanel scrollside; // Side panel with a scrollbar and some labels
+    private JScrollPane scrollCanvas; // ScrollPane for CanvasPanel to be scrollable
 
+    // Current location of a mouse on the frame
     private int current_x_coordinate;
     private int current_y_coordinate;
 
@@ -58,14 +46,12 @@ public class GEFrame extends javax.swing.JFrame {
      * Creates new form GEFrame
      */
     public GEFrame() {
-        getContentPane().setBackground(Color.getHSBColor(204, 243, 166));
         canvas = new CanvasPanel(this);
         toolbar = new ToolbarPanel(this);
         scrollside = new ScrollSidePanel(this);
         scrollCanvas = new JScrollPane(canvas);
         scrollCanvas.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollCanvas.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        canvas.setBackground(Color.red);
         add(scrollCanvas, BorderLayout.CENTER);
         add(toolbar, BorderLayout.PAGE_START);
         add(scrollside, BorderLayout.EAST);
@@ -90,7 +76,7 @@ public class GEFrame extends javax.swing.JFrame {
         aboutItem = new javax.swing.JMenuItem();
         exitItem = new javax.swing.JMenuItem();
         editMenu = new javax.swing.JMenu();
-        bacItem = new javax.swing.JMenuItem();
+        backItem = new javax.swing.JMenuItem();
         forwardItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -109,7 +95,7 @@ public class GEFrame extends javax.swing.JFrame {
 
         fileMenu.setText("File");
 
-        openItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_SHIFT, java.awt.event.InputEvent.CTRL_MASK));
+        openItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
         openItem.setText("Open");
         openItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -166,14 +152,14 @@ public class GEFrame extends javax.swing.JFrame {
 
         editMenu.setText("Edit");
 
-        bacItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, java.awt.event.InputEvent.CTRL_MASK));
-        bacItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/back.png"))); // NOI18N
-        bacItem.addActionListener(new java.awt.event.ActionListener() {
+        backItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, java.awt.event.InputEvent.CTRL_MASK));
+        backItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/back.png"))); // NOI18N
+        backItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bacItemActionPerformed(evt);
+                backItemActionPerformed(evt);
             }
         });
-        editMenu.add(bacItem);
+        editMenu.add(backItem);
 
         forwardItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Y, java.awt.event.InputEvent.CTRL_MASK));
         forwardItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/forward.png"))); // NOI18N
@@ -220,14 +206,14 @@ public class GEFrame extends javax.swing.JFrame {
         canvas.repaint();
     }//GEN-LAST:event_forwardItemActionPerformed
 
-    private void bacItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bacItemActionPerformed
+    private void backItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backItemActionPerformed
         if (canvas.getShapes().size() == 1) {
             return;
         }
         canvas.getBin().add(canvas.getShapes().get(canvas.getShapes().size() - 1));
         canvas.getShapes().remove(canvas.getShapes().size() - 1);
         canvas.repaint();
-    }//GEN-LAST:event_bacItemActionPerformed
+    }//GEN-LAST:event_backItemActionPerformed
 
     private void openItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openItemActionPerformed
         File file = new File(System.getProperty("user.dir"));
@@ -235,11 +221,8 @@ public class GEFrame extends javax.swing.JFrame {
         fc.setFileFilter(new FileFilter() {
             @Override
             public boolean accept(File f) {
-                String fileName = f.getName().toString();
-                if (fileName.endsWith(".png")) {
-                    return true;
-                }
-                return false;
+                String fileName = f.getName();
+                return fileName.endsWith(".png");
             }
 
             @Override
@@ -320,16 +303,14 @@ public class GEFrame extends javax.swing.JFrame {
         int res = JOptionPane.showConfirmDialog(null, "Are you sure you want to create a new one ?", "Create a new one?", JOptionPane.YES_NO_CANCEL_OPTION);
         if (res == JOptionPane.YES_OPTION) {
             ArrayList<Drawable> list = new ArrayList<>();
-              canvas.setShapes(list);
-              list.add(canvas.getBackgroundRectangle());
-              canvas.repaint();
-        } else {
-            return;
+            canvas.setShapes(list);
+            list.add(canvas.getBackgroundRectangle());
+            canvas.repaint();
         }
     }//GEN-LAST:event_newPictureItemActionPerformed
 
     private void aboutItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutItemActionPerformed
-        JOptionPane.showMessageDialog(null, "Kinda like paint","About",JOptionPane.DEFAULT_OPTION);
+        JOptionPane.showMessageDialog(null, "Kinda like paint", "About", JOptionPane.DEFAULT_OPTION);
     }//GEN-LAST:event_aboutItemActionPerformed
 
     private void exitItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitItemActionPerformed
@@ -350,14 +331,11 @@ public class GEFrame extends javax.swing.JFrame {
             UIManager.setLookAndFeel(
                     UIManager.getSystemLookAndFeelClassName());
         } catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
         }
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new GEFrame().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new GEFrame().setVisible(true);
         });
     }
 
@@ -373,11 +351,11 @@ public class GEFrame extends javax.swing.JFrame {
         return scrollside;
     }
 
-    public JMenu getjMenu1() {
+    public JMenu getFileMenu() {
         return fileMenu;
     }
 
-    public JMenuBar getjMenuBar1() {
+    public JMenuBar getjMenuBar() {
         return menuBar;
     }
 
@@ -408,7 +386,7 @@ public class GEFrame extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutItem;
-    private javax.swing.JMenuItem bacItem;
+    private javax.swing.JMenuItem backItem;
     private javax.swing.JMenu editMenu;
     private javax.swing.JMenuItem exitItem;
     private javax.swing.JMenu fileMenu;

@@ -10,19 +10,18 @@ import graphicsEditor.drawnShapes.DrawnRectangle;
 import graphicsEditor.instruments.Tool;
 import java.awt.Color;
 import java.awt.Dimension;
-import javax.swing.JFrame;
-import javax.swing.JScrollPane;
 
-/**
+/** Side panel for scroll
  *
  * @author VADIM
  */
 public class ScrollSidePanel extends javax.swing.JPanel {
 
-    GEFrame frame;
+    final private GEFrame frame;
 
     /**
      * Creates new form ScrollSidePanel
+     * @param frame
      */
     public ScrollSidePanel(GEFrame frame) {
         initComponents();

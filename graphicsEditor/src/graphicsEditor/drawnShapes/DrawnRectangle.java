@@ -11,7 +11,7 @@ import java.awt.Stroke;
 
 /**
  *
- * @author VADIM
+ * @author VADYM NAKYTNIAK
  */
 public class DrawnRectangle extends Rectangle implements Drawable {
 

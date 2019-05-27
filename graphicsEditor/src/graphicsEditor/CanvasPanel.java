@@ -8,51 +8,29 @@ package graphicsEditor;
 import graphicsEditor.instruments.Tool;
 import graphicsEditor.drawnShapes.DrawnRectangle;
 import graphicsEditor.drawnShapes.DrawnTriangle;
-import com.sun.webkit.ColorChooser;
 import graphicsEditor.drawnShapes.Drawable;
 import graphicsEditor.drawnShapes.DrawnCircle;
 import graphicsEditor.drawnShapes.DrawnImage;
 import graphicsEditor.drawnShapes.DrawnLine;
 import graphicsEditor.drawnShapes.DrawnText;
-import java.awt.AWTException;
-import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Composite;
-import java.awt.CompositeContext;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.Polygon;
-import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.Robot;
 import java.awt.Shape;
 import java.awt.Stroke;
-import java.awt.geom.Area;
-import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
-import java.awt.image.ImageObserver;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Stack;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.scene.shape.Line;
-import javax.imageio.ImageIO;
-import javax.swing.JColorChooser;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.colorchooser.ColorChooserComponentFactory;
 
 /**
+ * Panel for drwing on
  *
- * @author VADIM
+ * @author VADYM NAKYTNIAK
  */
 public class CanvasPanel extends JPanel {
 
@@ -113,7 +91,7 @@ public class CanvasPanel extends JPanel {
     //Scale
     private float scale;
 
-    //Varibles nitialization
+    //Varibles initialization
     {
         tool = Tool.BRUSH;
         stroke = new BasicStroke(1f);
@@ -129,6 +107,8 @@ public class CanvasPanel extends JPanel {
 
     /**
      * Creates new form CanvasPanel
+     *
+     * @param frame
      */
     public CanvasPanel(GEFrame frame) {
         initComponents();
@@ -187,7 +167,6 @@ public class CanvasPanel extends JPanel {
                     break;
                 }
                 case PIPETTE: {
-
                     break;
                 }
                 case SHAPE_RECTANGLE: {
@@ -211,7 +190,6 @@ public class CanvasPanel extends JPanel {
                     return;
                 }
                 case NO_TOOL: {
-
                     break;
                 }
             }
@@ -257,7 +235,7 @@ public class CanvasPanel extends JPanel {
                             break;
                         }
                         case CanvasPanel.BACKGROUND_COLOR: {
-                            DrawnRectangle background = new DrawnRectangle(frame.getCanvas().getStroke(), color, color, 0, 0, CanvasPanel.WIDTH, CanvasPanel.HEIGHT);
+                            background = new DrawnRectangle(frame.getCanvas().getStroke(), color, color, 0, 0, CanvasPanel.WIDTH, CanvasPanel.HEIGHT);
                             setBackgroundRectangle(background);
                             break;
                         }
@@ -282,7 +260,6 @@ public class CanvasPanel extends JPanel {
                 break;
             }
             case NO_TOOL: {
-
                 break;
             }
         }
@@ -303,6 +280,21 @@ public class CanvasPanel extends JPanel {
         g2d.setColor(brushColor);
         g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         //DRAWING
+        drawAllShapes(g2d);
+        //Draw Shape s
+        drawShape(g2d);
+        //Draw Image image
+        drawImage(g2d);
+        //Draw String text        
+        drawText(g2d);
+    }
+
+    /**
+     * Method for drawing all objects from the arraylist shapes
+     *
+     * @param g2d
+     */
+    public void drawAllShapes(Graphics2D g2d) {
         for (Drawable s : shapes) {
             if (s instanceof DrawnImage) {
                 DrawnImage im = (DrawnImage) s;
@@ -327,7 +319,14 @@ public class CanvasPanel extends JPanel {
             g2d.setColor(s.getColor());
             g2d.draw((Shape) s);
         }
-        //Draw Shape s
+    }
+
+    /**
+     * Method for drawing a temporary shape
+     *
+     * @param g2d
+     */
+    public void drawShape(Graphics2D g2d) {
         if (s != null) {
             if (s.getFillColor() != null) {
                 g2d.setColor(s.getFillColor());
@@ -337,21 +336,62 @@ public class CanvasPanel extends JPanel {
             g2d.setColor(s.getColor());
             g2d.draw((Shape) s);
         }
+    }
 
+    /**
+     * Method for drawing a temporary image
+     *
+     * @param g2d
+     */
+    public void drawImage(Graphics g2d) {
         if (image != null) {
             g2d.drawImage(image.getImage(), image.getX(), image.getY(), null);
 
         }
+    }
 
+    /**
+     * Method for drawing temporary text
+     *
+     * @param g2d
+     */
+    public void drawText(Graphics g2d) {
         if (text != null) {
             g2d.setFont(text.getFont());
             g2d.setColor(text.getColor());
             g2d.drawString(text.getText(), text.getX(), text.getY());
 
         }
-
     }
 
+    /**
+     * Method to reset the temporary variables
+     */
+    public void reset() {
+        if (isMouseOnImage) {
+            isMouseOnImage = false;
+            setTool(Tool.NO_TOOL);
+            shapes.add(image);
+            image = null;
+        }
+        if (isMouseOnText) {
+            isMouseOnText = false;
+            setTool(Tool.NO_TOOL);
+            shapes.add(text);
+            text = null;
+        }
+        if (s != null) {
+            shapes.add(s);
+            s = null;
+        }
+    }
+
+    /**
+     * Method for taking the picture of the panel
+     *
+     * @param component
+     * @return
+     */
     public static BufferedImage getScreenComponent(Component component) {
         BufferedImage image = new BufferedImage(
                 component.getWidth(),
@@ -525,27 +565,6 @@ public class CanvasPanel extends JPanel {
         this.bin = bin;
     }
 
-    public void reset() {
-        if (isMouseOnImage) {
-            isMouseOnImage = false;
-            setTool(Tool.NO_TOOL);
-            shapes.add(image);
-            image = null;
-        }
-        if (isMouseOnText) {
-            isMouseOnText = false;
-            setTool(Tool.NO_TOOL);
-            shapes.add(text);
-            text = null;
-        }
-        if (s != null) {
-            shapes.add(s);
-            s = null;
-        }
-    }
-
-    
-    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
 }

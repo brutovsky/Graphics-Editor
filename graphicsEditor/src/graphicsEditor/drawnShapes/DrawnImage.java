@@ -11,7 +11,7 @@ import java.awt.image.BufferedImage;
 
 /**
  *
- * @author VADIM
+ * @author VADYM NAKYTNIAK
  */
 public class DrawnImage extends BufferedImage implements Drawable {
 
@@ -81,7 +81,7 @@ public class DrawnImage extends BufferedImage implements Drawable {
     /**
      * EMPTY method
      *
-     * @param stroke
+     * @param color
      */
     @Override
     public void setColor(Color color) {
@@ -90,7 +90,7 @@ public class DrawnImage extends BufferedImage implements Drawable {
     /**
      * EMPTY method
      *
-     * @param stroke
+     * @param color
      */
     @Override
     public void setFillColor(Color color) {
