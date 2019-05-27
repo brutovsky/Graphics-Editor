@@ -368,7 +368,7 @@ public class ToolbarPanel extends javax.swing.JPanel {
         
         button1.setSelected(true);
 
-        JOptionPane.showMessageDialog(null, panel, "Choose color aim", JOptionPane.DEFAULT_OPTION, new ImageIcon(System.getProperty("user.dir") + "//src//icons//chooseColorAim.png"));
+        JOptionPane.showMessageDialog(null, panel, "Choose color aim", JOptionPane.DEFAULT_OPTION, null);
         if (group.isSelected(button1.getModel())) {
             frame.getCanvas().setPipetteChoice(CanvasPanel.BRUSH_COLOR);
         } else if (group.isSelected(button2.getModel())) {
