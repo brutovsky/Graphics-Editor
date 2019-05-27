@@ -12,7 +12,7 @@ import java.awt.geom.Point2D;
 
 /**
  *
- * @author VADIM
+ * @author VADYM NAKYTNIAK
  */
 public class DrawnLine extends Line2D.Double implements Drawable {
 
@@ -24,7 +24,7 @@ public class DrawnLine extends Line2D.Double implements Drawable {
         super(x1, y1, x2, y2);
         this.stroke = stroke;
         this.color = color;
-        fillColor = null;
+        fillColor = color;
     }
 
     public DrawnLine(Stroke stroke, Color color, Point2D p1, Point2D p2) {

@@ -11,7 +11,7 @@ import java.awt.geom.Ellipse2D;
 
 /**
  *
- * @author VADIM
+ * @author VADYM NAKYTNIAK
  */
 public class DrawnCircle extends Ellipse2D.Double implements Drawable {
 

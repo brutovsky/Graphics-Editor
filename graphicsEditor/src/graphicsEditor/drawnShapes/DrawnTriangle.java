@@ -11,7 +11,7 @@ import java.awt.geom.Path2D;
 
 /**
  *
- * @author VADIM
+ * @author VADYM NAKYTNIAK
  */
 public class DrawnTriangle extends Path2D.Double implements Drawable {
 

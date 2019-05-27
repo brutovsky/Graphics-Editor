@@ -6,33 +6,39 @@
 package graphicsEditor;
 
 import static graphicsEditor.CanvasPanel.getScreenComponent;
+import graphicsEditor.drawnShapes.Drawable;
+import graphicsEditor.drawnShapes.DrawnImage;
 import graphicsEditor.drawnShapes.DrawnRectangle;
 import graphicsEditor.instruments.Tool;
-import java.awt.AWTEvent;
 import java.awt.BorderLayout;
-import java.awt.Button;
 import java.awt.Color;
-import java.awt.Event;
-import java.awt.Graphics;
-import java.awt.Label;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import javax.imageio.ImageIO;
+import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.filechooser.FileFilter;
 
 /**
+ * The main frame of the application
  *
- * @author VADIM
+ * @author VADYM NAKYTNIAK
  */
 public class GEFrame extends javax.swing.JFrame {
 
-    CanvasPanel canvas;
-    ToolbarPanel toolbar;
-    ScrollSidePanel scrollside;
+    final private CanvasPanel canvas; // Canvas for drawing on
+    final private ToolbarPanel toolbar; // Panel with all tools
+    final private ScrollSidePanel scrollside; // Side panel with a scrollbar and some labels
+    private JScrollPane scrollCanvas; // ScrollPane for CanvasPanel to be scrollable
 
+    // Current location of a mouse on the frame
     private int current_x_coordinate;
     private int current_y_coordinate;
 
@@ -40,19 +46,16 @@ public class GEFrame extends javax.swing.JFrame {
      * Creates new form GEFrame
      */
     public GEFrame() {
-        initComponents();
-        getContentPane().setBackground(Color.getHSBColor(204, 243, 166));
         canvas = new CanvasPanel(this);
         toolbar = new ToolbarPanel(this);
         scrollside = new ScrollSidePanel(this);
-        JScrollPane scrollCanvas = new JScrollPane(canvas);
+        scrollCanvas = new JScrollPane(canvas);
         scrollCanvas.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollCanvas.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scrollCanvas.setBackground(Color.white);
-        canvas.setBackground(Color.red);
         add(scrollCanvas, BorderLayout.CENTER);
         add(toolbar, BorderLayout.PAGE_START);
         add(scrollside, BorderLayout.EAST);
+        initComponents();
     }
 
     /**
@@ -66,6 +69,15 @@ public class GEFrame extends javax.swing.JFrame {
 
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
+        openItem = new javax.swing.JMenuItem();
+        saveItem = new javax.swing.JMenuItem();
+        saveAsItem = new javax.swing.JMenuItem();
+        newPictureItem = new javax.swing.JMenuItem();
+        aboutItem = new javax.swing.JMenuItem();
+        exitItem = new javax.swing.JMenuItem();
+        editMenu = new javax.swing.JMenu();
+        backItem = new javax.swing.JMenuItem();
+        forwardItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Graphics Editor");
@@ -77,8 +89,88 @@ public class GEFrame extends javax.swing.JFrame {
             }
         });
 
+        menuBar.setForeground(Color.red);
+        menuBar.setBackground(new java.awt.Color(255, 255, 255));
+        menuBar.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
         fileMenu.setText("File");
+
+        openItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
+        openItem.setText("Open");
+        openItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                openItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(openItem);
+
+        saveItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
+        saveItem.setText("Save");
+        saveItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(saveItem);
+
+        saveAsItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.CTRL_MASK));
+        saveAsItem.setText("Save as...");
+        saveAsItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveAsItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(saveAsItem);
+
+        newPictureItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
+        newPictureItem.setText("New picture");
+        newPictureItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newPictureItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(newPictureItem);
+
+        aboutItem.setText("About");
+        aboutItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                aboutItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(aboutItem);
+
+        exitItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_MASK));
+        exitItem.setText("Exit");
+        exitItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exitItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(exitItem);
+
         menuBar.add(fileMenu);
+
+        editMenu.setText("Edit");
+
+        backItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, java.awt.event.InputEvent.CTRL_MASK));
+        backItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/back.png"))); // NOI18N
+        backItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backItemActionPerformed(evt);
+            }
+        });
+        editMenu.add(backItem);
+
+        forwardItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Y, java.awt.event.InputEvent.CTRL_MASK));
+        forwardItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/forward.png"))); // NOI18N
+        forwardItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                forwardItemActionPerformed(evt);
+            }
+        });
+        editMenu.add(forwardItem);
+
+        menuBar.add(editMenu);
 
         setJMenuBar(menuBar);
 
@@ -106,6 +198,125 @@ public class GEFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_formMouseClicked
 
+    private void forwardItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_forwardItemActionPerformed
+        if (canvas.getBin().isEmpty()) {
+            return;
+        }
+        canvas.getShapes().add(canvas.getBin().pop());
+        canvas.repaint();
+    }//GEN-LAST:event_forwardItemActionPerformed
+
+    private void backItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backItemActionPerformed
+        if (canvas.getShapes().size() == 1) {
+            return;
+        }
+        canvas.getBin().add(canvas.getShapes().get(canvas.getShapes().size() - 1));
+        canvas.getShapes().remove(canvas.getShapes().size() - 1);
+        canvas.repaint();
+    }//GEN-LAST:event_backItemActionPerformed
+
+    private void openItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openItemActionPerformed
+        File file = new File(System.getProperty("user.dir"));
+        JFileChooser fc = new JFileChooser(file);
+        fc.setFileFilter(new FileFilter() {
+            @Override
+            public boolean accept(File f) {
+                String fileName = f.getName();
+                return fileName.endsWith(".png");
+            }
+
+            @Override
+            public String getDescription() {
+                return ".png";
+            }
+        });
+        int i = fc.showOpenDialog(null);
+        switch (i) {
+            case JFileChooser.APPROVE_OPTION: {
+                try {
+                    File fileSave = fc.getSelectedFile();
+                    if (!fileSave.getName().endsWith(".png")) {
+                        throw new IOException();
+                    }
+                    BufferedImage image = ImageIO.read(fileSave);
+                    canvas.getShapes().add(new DrawnImage(image, 0, 0));
+                    canvas.repaint();
+                } catch (IOException ioe) {
+                    JOptionPane.showMessageDialog(null, "Invalid file", "ERROR", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }
+    }//GEN-LAST:event_openItemActionPerformed
+
+    private void saveItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveItemActionPerformed
+        try {
+            File folder = new File(System.getProperty("user.dir") + "//savedPictures");
+            if (!folder.exists()) {
+                folder.mkdir();
+            }
+            String name = JOptionPane.showInputDialog(null, "Enter the name of the file", "Picture");
+            if (name == null) {
+                return;
+            }
+            File fileSave = new File(System.getProperty("user.dir") + "//savedPictures//" + name + ".png");
+            if (fileSave.exists()) {
+                int res = JOptionPane.showConfirmDialog(null, "Are you sure you want to overwrite " + fileSave.getName() + "?", "Overwrite ?", JOptionPane.YES_NO_CANCEL_OPTION);
+                if (res == JOptionPane.YES_OPTION) {
+                    fileSave.createNewFile();
+                } else {
+                    return;
+                }
+            } else {
+                fileSave.createNewFile();
+            }
+            ImageIO.write(CanvasPanel.getScreenComponent(canvas), "png", fileSave);
+        } catch (IOException ioe) {
+            JOptionPane.showMessageDialog(null, "Invalid file", "ERROR", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_saveItemActionPerformed
+
+    private void saveAsItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveAsItemActionPerformed
+        File file = new File(System.getProperty("user.dir"));
+        JFileChooser fc = new JFileChooser(file);
+        int i = fc.showSaveDialog(null);
+        switch (i) {
+            case JFileChooser.APPROVE_OPTION: {
+                try {
+                    File fileSave = new File(fc.getSelectedFile() + ".png");
+                    if (fileSave.exists()) {
+                        int res = JOptionPane.showConfirmDialog(null, "Are you sure you want to rewrite the file " + file.getName() + "?", "Rewrite ?", JOptionPane.YES_NO_CANCEL_OPTION);
+                        if (res == JOptionPane.YES_OPTION) {
+                        } else {
+                            return;
+                        }
+                    }
+                    fileSave.createNewFile();
+                    ImageIO.write(CanvasPanel.getScreenComponent(canvas), "png", fileSave);
+                } catch (IOException ioe) {
+                    JOptionPane.showMessageDialog(null, "Invalid file", "ERROR", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }
+    }//GEN-LAST:event_saveAsItemActionPerformed
+
+    private void newPictureItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newPictureItemActionPerformed
+        int res = JOptionPane.showConfirmDialog(null, "Are you sure you want to create a new one ?", "Create a new one?", JOptionPane.YES_NO_CANCEL_OPTION);
+        if (res == JOptionPane.YES_OPTION) {
+            ArrayList<Drawable> list = new ArrayList<>();
+            canvas.setShapes(list);
+            list.add(canvas.getBackgroundRectangle());
+            canvas.repaint();
+        }
+    }//GEN-LAST:event_newPictureItemActionPerformed
+
+    private void aboutItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutItemActionPerformed
+        JOptionPane.showMessageDialog(null, "Kinda like paint", "About", JOptionPane.DEFAULT_OPTION);
+    }//GEN-LAST:event_aboutItemActionPerformed
+
+    private void exitItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitItemActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_exitItemActionPerformed
+
     public void setCurrentCoordinates() {
         current_x_coordinate = (int) this.getMousePosition().getX();
         current_y_coordinate = (int) this.getMousePosition().getX();
@@ -120,14 +331,11 @@ public class GEFrame extends javax.swing.JFrame {
             UIManager.setLookAndFeel(
                     UIManager.getSystemLookAndFeelClassName());
         } catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
         }
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new GEFrame().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new GEFrame().setVisible(true);
         });
     }
 
@@ -143,11 +351,11 @@ public class GEFrame extends javax.swing.JFrame {
         return scrollside;
     }
 
-    public JMenu getjMenu1() {
+    public JMenu getFileMenu() {
         return fileMenu;
     }
 
-    public JMenuBar getjMenuBar1() {
+    public JMenuBar getjMenuBar() {
         return menuBar;
     }
 
@@ -159,6 +367,10 @@ public class GEFrame extends javax.swing.JFrame {
         return current_y_coordinate;
     }
 
+    public JScrollPane getScrollCanvas() {
+        return scrollCanvas;
+    }
+
     public void setCurrent_x_coordinate(int current_x_coordinate) {
         this.current_x_coordinate = current_x_coordinate;
     }
@@ -167,8 +379,22 @@ public class GEFrame extends javax.swing.JFrame {
         this.current_y_coordinate = current_y_coordinate;
     }
 
+    public void setScrollCanvas(JScrollPane scrollCanvas) {
+        this.scrollCanvas = scrollCanvas;
+    }
+
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem aboutItem;
+    private javax.swing.JMenuItem backItem;
+    private javax.swing.JMenu editMenu;
+    private javax.swing.JMenuItem exitItem;
     private javax.swing.JMenu fileMenu;
+    private javax.swing.JMenuItem forwardItem;
     private javax.swing.JMenuBar menuBar;
+    private javax.swing.JMenuItem newPictureItem;
+    private javax.swing.JMenuItem openItem;
+    private javax.swing.JMenuItem saveAsItem;
+    private javax.swing.JMenuItem saveItem;
     // End of variables declaration//GEN-END:variables
 }

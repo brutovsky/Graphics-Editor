@@ -9,18 +9,19 @@ import static graphicsEditor.CanvasPanel.getScreenComponent;
 import graphicsEditor.drawnShapes.DrawnRectangle;
 import graphicsEditor.instruments.Tool;
 import java.awt.Color;
-import javax.swing.JFrame;
+import java.awt.Dimension;
 
-/**
+/** Side panel for scroll
  *
  * @author VADIM
  */
 public class ScrollSidePanel extends javax.swing.JPanel {
 
-    GEFrame frame;
+    final private GEFrame frame;
 
     /**
      * Creates new form ScrollSidePanel
+     * @param frame
      */
     public ScrollSidePanel(GEFrame frame) {
         initComponents();
@@ -37,21 +38,76 @@ public class ScrollSidePanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        slider = new javax.swing.JSlider();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+
         addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 formMouseClicked(evt);
             }
         });
 
+        slider.setBackground(new java.awt.Color(150, 200, 225));
+        slider.setMajorTickSpacing(30);
+        slider.setMaximum(400);
+        slider.setMinimum(100);
+        slider.setMinorTickSpacing(30);
+        slider.setOrientation(javax.swing.JSlider.VERTICAL);
+        slider.setPaintLabels(true);
+        slider.setPaintTicks(true);
+        slider.setPreferredSize(new java.awt.Dimension(80, 450));
+        slider.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                sliderStateChanged(evt);
+            }
+        });
+        slider.addMouseWheelListener(new java.awt.event.MouseWheelListener() {
+            public void mouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
+                sliderMouseWheelMoved(evt);
+            }
+        });
+
+        jLabel1.setFont(new java.awt.Font("Bahnschrift", 2, 14)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(102, 102, 102));
+        jLabel1.setText("made by Vadym Nakytniak");
+
+        jLabel2.setFont(new java.awt.Font("Bahnschrift", 1, 24)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(172, 0, 255));
+        jLabel2.setText("Graphics Editor");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addComponent(jLabel1))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addComponent(jLabel2)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(slider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 700, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 635, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addContainerGap())
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(slider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -76,7 +132,22 @@ public class ScrollSidePanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_formMouseClicked
 
+    private void sliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sliderStateChanged
+        frame.getCanvas().setScale(slider.getValue() / 100f);
+        Dimension dim = new Dimension((int) (CanvasPanel.PREFERRED_WIDTH * frame.getCanvas().getScale()), (int) (CanvasPanel.PREFERRED_HEIGHT * frame.getCanvas().getScale()));
+        frame.getCanvas().setPreferredSize(dim);
+        frame.getCanvas().repaint();
+        frame.getCanvas().revalidate();
+    }//GEN-LAST:event_sliderStateChanged
+
+    private void sliderMouseWheelMoved(java.awt.event.MouseWheelEvent evt) {//GEN-FIRST:event_sliderMouseWheelMoved
+        slider.setValue(slider.getValue() + (int) evt.getPreciseWheelRotation());
+    }//GEN-LAST:event_sliderMouseWheelMoved
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JSlider slider;
     // End of variables declaration//GEN-END:variables
 }

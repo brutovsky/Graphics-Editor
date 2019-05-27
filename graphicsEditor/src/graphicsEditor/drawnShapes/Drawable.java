@@ -9,8 +9,8 @@ import java.awt.Color;
 import java.awt.Stroke;
 
 /**
- *
- * @author VADIM
+ * Interface for all objects to be drawn
+ * @author VADYM NAKYTNIAK
  */
 public interface Drawable {
     Stroke getStroke();
