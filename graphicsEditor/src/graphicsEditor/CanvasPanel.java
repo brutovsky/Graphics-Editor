@@ -5,6 +5,7 @@
  */
 package graphicsEditor;
 
+import graphicsEditor.instruments.ImageTransfarable;
 import graphicsEditor.instruments.Tool;
 import graphicsEditor.drawnShapes.DrawnRectangle;
 import graphicsEditor.drawnShapes.DrawnTriangle;
@@ -22,6 +23,8 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.Stroke;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Stack;
@@ -33,6 +36,9 @@ import javax.swing.JPanel;
  * @author VADYM NAKYTNIAK
  */
 public class CanvasPanel extends JPanel {
+
+    //Rectangle zone
+    DrawnRectangle zone;
 
     //GEFrame
     GEFrame frame;
@@ -56,6 +62,7 @@ public class CanvasPanel extends JPanel {
     private boolean isMouseClicked;
     private boolean isMouseOnImage;
     private boolean isMouseOnText;
+    private boolean isMouseOnZone;
 
     //The list of all shapes to be drawn
     private ArrayList<Drawable> shapes;
@@ -192,6 +199,11 @@ public class CanvasPanel extends JPanel {
                 case NO_TOOL: {
                     break;
                 }
+                case CUT_OUT: {
+                    zone = new DrawnRectangle(zone.getStroke(), zone.getColor(), zone.getFillColor(), (int) x1, (int) y1, (int) x2 - (int) x1, (int) y2 - (int) y1);
+                    repaint();
+                    return;
+                }
             }
             repaint();
             x1 = x2;
@@ -262,6 +274,11 @@ public class CanvasPanel extends JPanel {
             case NO_TOOL: {
                 break;
             }
+            case CUT_OUT: {
+                isMouseOnZone = true;
+                zone = new DrawnRectangle(new BasicStroke(1f), Color.RED, null, (int) x1, (int) y1, 50, 50);
+                break;
+            }
         }
         repaint();
     }//GEN-LAST:event_formMousePressed
@@ -287,6 +304,8 @@ public class CanvasPanel extends JPanel {
         drawImage(g2d);
         //Draw String text        
         drawText(g2d);
+        //Draw zone
+        drawZone(g2d);
     }
 
     /**
@@ -318,6 +337,14 @@ public class CanvasPanel extends JPanel {
             g2d.setStroke(s.getStroke());
             g2d.setColor(s.getColor());
             g2d.draw((Shape) s);
+        }
+    }
+
+    public void drawZone(Graphics2D g2d) {
+        if (zone != null) {
+            g2d.setStroke(zone.getStroke());
+            g2d.setColor(zone.getColor());
+            g2d.draw((Shape) zone);
         }
     }
 
@@ -368,6 +395,15 @@ public class CanvasPanel extends JPanel {
      * Method to reset the temporary variables
      */
     public void reset() {
+        if (isMouseOnZone) {
+            isMouseOnZone = false;
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            BufferedImage canvas_image = getScreenComponent(this).getSubimage((int) ((zone.getX()+1)), (int) ((zone.getY()+1)), (int) ((zone.getWidth()-1)), (int) (((zone.getHeight()-1))));
+            ImageTransfarable cutout_image = new ImageTransfarable(canvas_image);
+            clipboard.setContents(cutout_image, null);
+            shapes.add(new DrawnRectangle(new BasicStroke(1f), backgroundColor, backgroundColor,(int) zone.getX(), (int) zone.getY(), (int) zone.getWidth()+1, (int) zone.getHeight()+1));
+            zone = null;
+        }
         if (isMouseOnImage) {
             isMouseOnImage = false;
             setTool(Tool.NO_TOOL);
@@ -384,6 +420,7 @@ public class CanvasPanel extends JPanel {
             shapes.add(s);
             s = null;
         }
+
     }
 
     /**
@@ -564,6 +601,23 @@ public class CanvasPanel extends JPanel {
     public void setBin(Stack<Drawable> bin) {
         this.bin = bin;
     }
+
+    public DrawnRectangle getZone() {
+        return zone;
+    }
+
+    public void setZone(DrawnRectangle zone) {
+        this.zone = zone;
+    }
+
+    public boolean isIsMouseOnZone() {
+        return isMouseOnZone;
+    }
+
+    public void setIsMouseOnZone(boolean isMouseOnZone) {
+        this.isMouseOnZone = isMouseOnZone;
+    }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
