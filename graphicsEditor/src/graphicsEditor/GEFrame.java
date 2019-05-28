@@ -10,12 +10,20 @@ import graphicsEditor.drawnShapes.Drawable;
 import graphicsEditor.drawnShapes.DrawnImage;
 import graphicsEditor.drawnShapes.DrawnRectangle;
 import graphicsEditor.instruments.Tool;
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
@@ -78,6 +86,8 @@ public class GEFrame extends javax.swing.JFrame {
         editMenu = new javax.swing.JMenu();
         backItem = new javax.swing.JMenuItem();
         forwardItem = new javax.swing.JMenuItem();
+        cutMenu = new javax.swing.JMenuItem();
+        insertItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Graphics Editor");
@@ -169,6 +179,24 @@ public class GEFrame extends javax.swing.JFrame {
             }
         });
         editMenu.add(forwardItem);
+
+        cutMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.InputEvent.CTRL_MASK));
+        cutMenu.setText("Cut out");
+        cutMenu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cutMenuActionPerformed(evt);
+            }
+        });
+        editMenu.add(cutMenu);
+
+        insertItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, java.awt.event.InputEvent.CTRL_MASK));
+        insertItem.setText("Insert");
+        insertItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                insertItemActionPerformed(evt);
+            }
+        });
+        editMenu.add(insertItem);
 
         menuBar.add(editMenu);
 
@@ -317,6 +345,31 @@ public class GEFrame extends javax.swing.JFrame {
         System.exit(0);
     }//GEN-LAST:event_exitItemActionPerformed
 
+    private void insertItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_insertItemActionPerformed
+        canvas.reset();
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        if (clipboard.isDataFlavorAvailable(DataFlavor.imageFlavor)) {
+            try {
+                BufferedImage image = (BufferedImage) clipboard.getData(DataFlavor.imageFlavor);
+                canvas.setImage(image, 0, 0);
+                canvas.repaint();
+                canvas.setTool(Tool.INSERT_PICTURE);
+                canvas.setIsMouseOnImage(true);
+                toolbar.updatePreview();
+            } catch (UnsupportedFlavorException | IOException ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "NO IMAGES", "ERROR", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_insertItemActionPerformed
+
+    private void cutMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cutMenuActionPerformed
+        canvas.reset();
+        canvas.setTool(Tool.CUT_OUT);
+        toolbar.updatePreview();
+    }//GEN-LAST:event_cutMenuActionPerformed
+
     public void setCurrentCoordinates() {
         current_x_coordinate = (int) this.getMousePosition().getX();
         current_y_coordinate = (int) this.getMousePosition().getX();
@@ -387,10 +440,12 @@ public class GEFrame extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutItem;
     private javax.swing.JMenuItem backItem;
+    private javax.swing.JMenuItem cutMenu;
     private javax.swing.JMenu editMenu;
     private javax.swing.JMenuItem exitItem;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenuItem forwardItem;
+    private javax.swing.JMenuItem insertItem;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem newPictureItem;
     private javax.swing.JMenuItem openItem;
