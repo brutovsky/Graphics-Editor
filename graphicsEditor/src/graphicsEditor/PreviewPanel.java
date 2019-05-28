@@ -10,6 +10,7 @@ import graphicsEditor.drawnShapes.DrawnLine;
 import graphicsEditor.drawnShapes.DrawnRectangle;
 import graphicsEditor.drawnShapes.DrawnTriangle;
 import graphicsEditor.instruments.Tool;
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -135,7 +136,12 @@ public class PreviewPanel extends javax.swing.JPanel {
                 break;
             }
             case NO_TOOL: {
-
+                break;
+            }
+            case CUT_OUT:{
+                DrawnRectangle rect = new DrawnRectangle(new BasicStroke(1f), Color.red, null, 20, 20, 50, 50);
+                g2d.setColor(rect.getColor());
+                g2d.draw(rect);
                 break;
             }
         }
