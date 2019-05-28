@@ -123,7 +123,7 @@ public class GEFrame extends javax.swing.JFrame {
         fileMenu.add(saveAsItem);
 
         newPictureItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
-        newPictureItem.setText("New picture");
+        newPictureItem.setText("Clean canvas");
         newPictureItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 newPictureItemActionPerformed(evt);
@@ -300,7 +300,7 @@ public class GEFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_saveAsItemActionPerformed
 
     private void newPictureItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newPictureItemActionPerformed
-        int res = JOptionPane.showConfirmDialog(null, "Are you sure you want to create a new one ?", "Create a new one?", JOptionPane.YES_NO_CANCEL_OPTION);
+        int res = JOptionPane.showConfirmDialog(null, "Are you sure you want to clean the canvas ?", "Clean?", JOptionPane.YES_NO_CANCEL_OPTION);
         if (res == JOptionPane.YES_OPTION) {
             ArrayList<Drawable> list = new ArrayList<>();
             canvas.setShapes(list);
@@ -310,7 +310,7 @@ public class GEFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_newPictureItemActionPerformed
 
     private void aboutItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutItemActionPerformed
-        JOptionPane.showMessageDialog(null, "Kinda like paint", "About", JOptionPane.DEFAULT_OPTION);
+        JOptionPane.showMessageDialog(null, "Graphics Editor\n\nmade by Vadym Nakytniak in 2019", "About", JOptionPane.DEFAULT_OPTION);
     }//GEN-LAST:event_aboutItemActionPerformed
 
     private void exitItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitItemActionPerformed
